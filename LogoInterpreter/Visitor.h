@@ -26,5 +26,8 @@ public:
 	void onVisit(const SequentialCommand& ) override;
 	void onVisit(const CallCommand& call_command) override;
 	void onVisit(const DeclareFunctionCommand& call_command) override;
+
+
+	static CommandsVisitor createNestedVisitor(const CommandsEnvironment& nestedEnvironment);
 };
 
