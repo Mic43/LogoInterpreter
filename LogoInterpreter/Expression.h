@@ -30,4 +30,9 @@ private:
 public:
 	virtual double evaluate(const CommandsEnvironment&) override;
 
+
+	explicit VarExpresion(const std::string& name)
+		: name(name)
+	{
+	}
 };

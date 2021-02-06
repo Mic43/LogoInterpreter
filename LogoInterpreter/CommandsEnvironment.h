@@ -1,12 +1,13 @@
 ﻿#pragma once
 #include <map>
 #include <memory>
+#include <memory>
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include "TurtleState.h"
 
 class Command;
-class TurtleState;
 class Procedure
 {
 	std::vector<std::string> parameters;
@@ -15,6 +16,13 @@ class Procedure
 
 
 public:
+	Procedure(const std::vector<std::string>& parameters, const std::string& name, Command* body)
+		: parameters(parameters),
+		  name(name),
+		  body(body)
+	{
+	}
+
 	Command* get_body() const
 	{
 		return body;
@@ -35,13 +43,18 @@ public:
 class CommandsEnvironment
 {
 	std::map<std::string, double> variables;
-	std::map<std::string, Procedure*> functions;	
-	TurtleState* turtle_state;
+	std::map<std::string, Procedure*> functions;
+	std::shared_ptr<TurtleState> turtle_state;
+
 
 public:
+	CommandsEnvironment(): turtle_state(std::make_shared<TurtleState>())
+	{
+	}
+	
 	TurtleState* get_turtle_state() const
 	{
-		return turtle_state;
+		return turtle_state.get();
 	}
 
 	const std::map<std::string, double>& get_variables() const

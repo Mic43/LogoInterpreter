@@ -13,7 +13,7 @@ Procedure* CommandsEnvironment::getProcedure(const std::string& name) const
 {
 	if (functions.find(newFunction->get_name()) != functions.end())
 		return false;
-	functions.emplace(newFunction->get_name(), newFunction);
+	functions[newFunction->get_name()] =  newFunction;
 	return true;
 }
 
@@ -31,7 +31,7 @@ CommandsEnvironment CommandsEnvironment::createNestedEnvironment(const CommandsE
 	CommandsEnvironment ce;
 	ce.functions = base.functions;
 	ce.variables = newVariables;
-
+	ce.turtle_state = base.turtle_state;
 	return ce;
 }
 

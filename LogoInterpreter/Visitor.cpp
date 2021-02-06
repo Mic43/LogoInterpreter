@@ -14,10 +14,9 @@ void CommandsVisitor::onVisit(const EmptyCommand& e)
 }
 
 void CommandsVisitor::onVisit(const SequentialCommand& command)
-{
-	CommandsVisitor v = *this;
+{	
 	command.get_command()->accept(*this);
-	command.get_next_command()->accept(v);
+	command.get_next_command()->accept(*this);
 }
 
 void CommandsVisitor::onVisit(const CallCommand& call_command)
@@ -35,7 +34,7 @@ void CommandsVisitor::onVisit(const CallCommand& call_command)
 	
 	for (auto* parameterExp : parameters)
 	{
-		nestedVariables.emplace(*paramName, parameterExp->evaluate(environment));
+		nestedVariables[*paramName] = parameterExp->evaluate(environment);
 		++paramName;
 	}	
 	auto nestedEnvironment = 

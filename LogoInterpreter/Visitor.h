@@ -21,9 +21,15 @@ class CommandsVisitor : public CommandsVisitorBase
 {
 private:
 	CommandsEnvironment environment;
-	
-	// Inherited via VisitorBase
+
 public:
+	CommandsEnvironment get_environment() const
+	{
+		return environment;
+	}
+
+	// Inherited via VisitorBase	
+
 	void onVisit(const EmptyCommand&) override;
 	void onVisit(const SequentialCommand& ) override;
 	void onVisit(const CallCommand& call_command) override;
