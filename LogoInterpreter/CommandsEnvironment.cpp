@@ -1,7 +1,7 @@
 ﻿#include "CommandsEnvironment.h"
 #include <stdexcept>
 
-Function* CommandsEnvironment::getFunction(const std::string& name) const
+Procedure* CommandsEnvironment::getProcedure(const std::string& name) const
 {
 	auto res = functions.find(name);
 	if (res == functions.end())
@@ -9,7 +9,7 @@ Function* CommandsEnvironment::getFunction(const std::string& name) const
 	return res->second;
 }
 
- bool CommandsEnvironment::tryAddNewFunction(Function* newFunction)
+ bool CommandsEnvironment::tryAddNewProcedure(Procedure* newFunction)
 {
 	if (functions.find(newFunction->get_name()) != functions.end())
 		return false;

@@ -9,9 +9,7 @@ void main()
 
 	CommandsVisitor v;
 
-
 	EmptyCommand empty;
-
 
 	Command& c = empty;
 

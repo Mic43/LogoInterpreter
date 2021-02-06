@@ -20,7 +20,12 @@ void CallCommand::accept(CommandsVisitorBase& v)
 	v.onVisit(*this);
 }
 
-void DeclareFunctionCommand::accept(CommandsVisitorBase& v)
+void DeclareProcedureCommand::accept(CommandsVisitorBase& v)
+{
+	v.onVisit(*this);
+}
+
+void TurtleCommand::accept(CommandsVisitorBase& v)
 {
 	v.onVisit(*this);
 }

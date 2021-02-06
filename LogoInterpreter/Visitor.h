@@ -11,7 +11,9 @@ public:
 	virtual void onVisit(const SequentialCommand& ) = 0;
 	virtual void onVisit(const EmptyCommand&) = 0;
 	virtual void onVisit(const CallCommand& call_command) = 0;
-	virtual void onVisit(const DeclareFunctionCommand& call_command) = 0;
+	virtual void onVisit(const DeclareProcedureCommand& call_command) = 0;
+	virtual void onVisit(const TurtleCommand& turtle_command) = 0;
+
 };
 
 
@@ -25,7 +27,8 @@ public:
 	void onVisit(const EmptyCommand&) override;
 	void onVisit(const SequentialCommand& ) override;
 	void onVisit(const CallCommand& call_command) override;
-	void onVisit(const DeclareFunctionCommand& call_command) override;
+	void onVisit(const DeclareProcedureCommand& call_command) override;
+	void onVisit(const TurtleCommand& turtle_command) override;
 
 
 	static CommandsVisitor createNestedVisitor(const CommandsEnvironment& nestedEnvironment);

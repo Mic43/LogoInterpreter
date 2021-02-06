@@ -7,6 +7,7 @@
 
 #include "CommandsEnvironment.h"
 #include "Expression.h"
+//#include "Visitor.h"
 
 class CommandsVisitorBase;
 
@@ -83,20 +84,18 @@ private:
 	std::string targetName;
 };
 
-
-
-class DeclareFunctionCommand : public SingleCommand
+class DeclareProcedureCommand : public SingleCommand
 {
 public:
-	UserDefinedFunction* get_target() const
+	Procedure* get_target() const
 	{
 		return target;
 	}
 
 private:
-	UserDefinedFunction* target;
+	Procedure* target;
 public:
-	explicit DeclareFunctionCommand(UserDefinedFunction* target)
+	explicit DeclareProcedureCommand(Procedure* target)
 		: target(target)
 	{
 	}
@@ -105,3 +104,31 @@ public:
 
 
 };
+
+ class TurtleCommand: public SingleCommand
+ {
+ private :
+ 	Expression* parameter;
+ public:
+ 	enum class Direction {Left,Top,Right,Bottom};
+
+    TurtleCommand(Expression* parameter, Direction direction)
+	    : parameter(parameter),
+	      direction(direction)
+    {
+    }
+
+    Expression* get_parameter() const
+    {
+	    return parameter;
+    }
+
+    Direction get_direction() const
+    {
+	    return direction;
+    }
+
+ 	void accept(CommandsVisitorBase& v) override;
+ private:
+	 Direction direction;
+ };
