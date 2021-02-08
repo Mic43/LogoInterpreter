@@ -44,7 +44,6 @@ class CommandsEnvironment
 	std::map<std::string, Procedure*> functions;
 	std::shared_ptr<TurtleState> turtle_state;
 
-
 public:
 	CommandsEnvironment(): turtle_state(std::make_shared<TurtleState>())
 	{

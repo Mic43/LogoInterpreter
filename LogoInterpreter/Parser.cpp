@@ -20,7 +20,7 @@ shared_ptr<Command> Parser::parse(std::vector<Token*>::iterator& token)
 	
 	//auto token = tokens.begin();	
 
-	shared_ptr<Command> res;
+	shared_ptr<SingleCommand> res = make_shared<EmptyCommand>();
 	switch ((*token)->get_type())
 	{		
 		case TokenType::Identifier:
@@ -28,6 +28,7 @@ shared_ptr<Command> Parser::parse(std::vector<Token*>::iterator& token)
 			string name = (*token)->get_content();
 			vector<Expression*> parameters = parseParameterList(token);
 			++token;
+				
 			if ((*token)->get_type() == TokenType::Semicolon)
 			{
 				++token;
@@ -54,14 +55,19 @@ shared_ptr<Command> Parser::parse(std::vector<Token*>::iterator& token)
 				});
 
 			auto body = parse(token);
-			res = std::make_shared<DeclareProcedureCommand>(std::make_shared<Procedure>(paramNames, name, body.get()).get());						
+			res = std::make_shared<DeclareProcedureCommand>(std::make_shared<Procedure>(paramNames, name, body.get()).get());
+			break;
 		}
 		case TokenType::IfKeyword:			
 			break;
 		case TokenType::Semicolon: 
 			res = std::make_shared<EmptyCommand>();
+			++token;
+			break;
 		default: ;
 			throw runtime_error("error");
-	}	
-	return res;
+	}
+	if(token == tokens.end())
+		return res;
+	return std::make_shared<SequentialCommand>(res.get(), parse(token).get());
 }
