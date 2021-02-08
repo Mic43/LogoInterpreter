@@ -13,7 +13,7 @@ public:
 	virtual void onVisit(const CallCommand& call_command) = 0;
 	virtual void onVisit(const DeclareProcedureCommand& call_command) = 0;
 	virtual void onVisit(const TurtleCommand& turtle_command) = 0;
-
+	virtual void onVisit(const IfCommand& if_command) = 0;
 };
 
 
@@ -35,7 +35,7 @@ public:
 	void onVisit(const CallCommand& call_command) override;
 	void onVisit(const DeclareProcedureCommand& call_command) override;
 	void onVisit(const TurtleCommand& turtle_command) override;
-
+	virtual void onVisit(const IfCommand& if_command);
 
 	static CommandsVisitor createNestedVisitor(const CommandsEnvironment& nestedEnvironment);
 };

@@ -14,7 +14,6 @@ class Procedure
 	std::string name;
 	Command* body;
 
-
 public:
 	Procedure(const std::vector<std::string>& parameters, const std::string& name, Command* body)
 		: parameters(parameters),
@@ -38,7 +37,6 @@ public:
 		return name;
 	}
 };
-
 
 class CommandsEnvironment
 {

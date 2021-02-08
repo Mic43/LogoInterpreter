@@ -30,3 +30,9 @@ void TurtleCommand::accept(CommandsVisitorBase& v)
 	v.onVisit(*this);
 }
 
+void IfCommand::accept(CommandsVisitorBase& v)
+{
+	v.onVisit(*this);
+
+}
+

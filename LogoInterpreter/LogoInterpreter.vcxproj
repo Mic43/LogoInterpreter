@@ -142,6 +142,8 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="CommandsEnvironment.h" />
+    <ClInclude Include="Parser.h" />
+    <ClInclude Include="Scanner.h" />
     <ClInclude Include="TurtleState.h" />
     <ClInclude Include="Visitor.h" />
   </ItemGroup>
@@ -150,6 +152,8 @@
     <ClCompile Include="CommandsEnvironment.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="Scanner.cpp" />
     <ClCompile Include="TurtleState.cpp" />
     <ClCompile Include="Visitor.cpp" />
   </ItemGroup>

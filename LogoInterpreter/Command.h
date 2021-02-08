@@ -132,3 +132,28 @@ public:
  private:
 	 Direction direction;
  };
+
+class IfCommand : public SingleCommand
+{
+public:
+	Expression* get_condition() const
+	{
+		return condition_;
+	}
+
+	Command* get_body() const
+	{
+		return body_;
+	}
+
+private:
+	Expression* condition_;
+	Command* body_;
+public:
+
+	IfCommand(Expression* condition,Command* body): condition_(condition), body_(body)
+	{
+		
+	}
+	void accept(CommandsVisitorBase&) override;
+};
