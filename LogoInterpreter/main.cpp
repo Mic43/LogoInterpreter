@@ -17,11 +17,11 @@ void main()
 	tokens.push_back(semi.get());
 	tokens.push_back(semi.get());
 
-	Parser p(tokens);
-	auto res = p.parse();
+	//Parser p(tokens);
+	//auto res = p.parse();
 	
 	CommandsVisitor visitor;
-	(*res).accept(visitor);
+	//(*res).accept(visitor);
 	// EmptyCommand empty;
 	//
 	// const char* procName = "foo";	

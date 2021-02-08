@@ -1,15 +1,15 @@
 ﻿#include "CommandsEnvironment.h"
 #include <stdexcept>
 
-Procedure* CommandsEnvironment::getProcedure(const std::string& name) const
+const Procedure& CommandsEnvironment::getProcedure(const std::string& name) const
 {
 	auto res = functions.find(name);
 	if (res == functions.end())
 		throw std::runtime_error("Function not defined: " + name);
-	return res->second;
+	return *res->second;
 }
 
- bool CommandsEnvironment::tryAddNewProcedure(Procedure* newFunction)
+ bool CommandsEnvironment::tryAddNewProcedure(std::shared_ptr<Procedure> newFunction)
 {
 	if (functions.find(newFunction->get_name()) != functions.end())
 		return false;

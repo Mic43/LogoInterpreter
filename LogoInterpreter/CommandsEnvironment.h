@@ -1,13 +1,14 @@
 ﻿#pragma once
 #include <map>
 #include <memory>
-#include <memory>
 #include <string>
 #include <vector>
 #include <stdexcept>
+
+#include "Command.h"
 #include "TurtleState.h"
 
-class Command;
+
 class Procedure
 {
 	std::vector<std::string> parameters;
@@ -42,7 +43,7 @@ public:
 class CommandsEnvironment
 {
 	std::map<std::string, double> variables;
-	std::map<std::string, Procedure*> functions;
+	std::map<std::string, std::shared_ptr<Procedure>> functions;
 	std::shared_ptr<TurtleState> turtle_state;
 
 public:
@@ -60,13 +61,13 @@ public:
 		return variables;
 	}
 
-	const std::map<std::string, Procedure*>& get_functions() const
+	const std::map<std::string, std::shared_ptr<Procedure>>& get_functions() const
 	{
 		return functions;
 	}
 
-	Procedure* getProcedure(const std::string& name) const;
-	bool tryAddNewProcedure(Procedure* newFunction);
+	const Procedure& getProcedure(const std::string& name) const;
+	bool tryAddNewProcedure(std::shared_ptr<Procedure> newFunction);
 	double getVariableValue(const std::string& name) const;
 
 	static CommandsEnvironment createNestedEnvironment(

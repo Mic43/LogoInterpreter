@@ -1,6 +1,7 @@
 ﻿#include "Parser.h"
 #include "Token.h"
 #include <algorithm>
+#include <stdexcept>
 using namespace std;
 
 std::vector<unique_ptr<Expression>> Parser::parseParameterList(const std::vector<unique_ptr<Token>>::iterator& token)
@@ -51,7 +52,6 @@ shared_ptr<Command> Parser::parse(vector<unique_ptr<Token>>::iterator& token)
 					{
 						return varExp->get_name();
 					}
-					throw runtime_error("");
 				});
 
 			auto body = parse(token);

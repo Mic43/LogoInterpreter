@@ -4,11 +4,10 @@
 #include <utility>
 #include <vector>
 
-
-#include "CommandsEnvironment.h"
 #include "Expression.h"
 //#include "Visitor.h"
 
+class Procedure;
 class CommandsVisitorBase;
 
 class Command
@@ -85,16 +84,19 @@ private:
 class DeclareProcedureCommand : public SingleCommand
 {
 public:
-	const Procedure& get_target() const
+	std::shared_ptr<Procedure> get_target() const
 	{
-		return *target;
+		return target;
 	}
 
-private:
-	std::unique_ptr<Procedure> target;	
+private:	
+	std::shared_ptr<Procedure> target;
 public:
-	explicit DeclareProcedureCommand(std::unique_ptr<Procedure> target):
-			target(std::move(target)) {}
+	explicit DeclareProcedureCommand(std::shared_ptr<Procedure> target):
+		target(std::move(target)) {
+		
+	}
+
 
 	void accept(CommandsVisitorBase&)  const override;
 

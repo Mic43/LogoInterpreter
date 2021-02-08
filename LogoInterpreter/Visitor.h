@@ -35,7 +35,7 @@ public:
 	void onVisit(const CallCommand& call_command) override;
 	void onVisit(const DeclareProcedureCommand& call_command) override;
 	void onVisit(const TurtleCommand& turtle_command) override;
-	void onVisit(const IfCommand& if_command);
+	void onVisit(const IfCommand& if_command) override;
 
 	static CommandsVisitor createNestedVisitor(const CommandsEnvironment& nestedEnvironment);
 };
