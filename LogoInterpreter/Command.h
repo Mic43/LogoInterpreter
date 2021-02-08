@@ -129,6 +129,12 @@ public:
     }
 
  	void accept(CommandsVisitorBase& v) override;
+	static std::shared_ptr<TurtleCommand> tryCreate(const std:: string& identifier, const std::vector<Expression*> &parameter)
+	{
+		if( identifier == "przod")
+			return std::make_shared<TurtleCommand>(parameter.front(), Direction::Top);
+		return std::unique_ptr<TurtleCommand>{};
+	}
  private:
 	 Direction direction;
  };

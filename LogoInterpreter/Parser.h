@@ -1,20 +1,24 @@
 ﻿#pragma once
 #include <string>
 #include <vector>
-
-
 #include "Command.h"
-#include "Scanner.h"
+
+
+class IdentifierToken;
+class Token;
 
 class Parser
 {
-	std::vector<Token> tokens;
-	//parseInternal(std::vector<Token>)
+	std::vector<Token*> tokens;
+	
+	std::shared_ptr<Command> parse(std::vector<Token*>::iterator& token);
 public:
-
-	explicit Parser(const std::vector<Token>& tokens)
+	
+	explicit Parser(const std::vector<Token*>& tokens)
 		: tokens(tokens)
 	{
 	}
-	Command& parse();	
+
+	std::vector<Expression*> parseParameterList(const std::vector<Token*>::iterator& token);
+	std::shared_ptr<Command> parse();	
 };

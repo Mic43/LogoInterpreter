@@ -144,6 +144,7 @@
     <ClInclude Include="CommandsEnvironment.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Scanner.h" />
+    <ClInclude Include="Token.h" />
     <ClInclude Include="TurtleState.h" />
     <ClInclude Include="Visitor.h" />
   </ItemGroup>
@@ -154,6 +155,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Scanner.cpp" />
+    <ClCompile Include="Token.cpp" />
     <ClCompile Include="TurtleState.cpp" />
     <ClCompile Include="Visitor.cpp" />
   </ItemGroup>

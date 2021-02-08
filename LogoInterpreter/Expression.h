@@ -126,4 +126,9 @@ public:
 		: name(name)
 	{
 	}
+
+	std::string get_name() const
+	{
+		return name;
+	}
 };

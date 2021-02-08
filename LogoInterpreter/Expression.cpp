@@ -32,7 +32,6 @@ double OperatorLess::evaluate(const CommandsEnvironment& e)
 double OperatorEqual::evaluate(const CommandsEnvironment& e)
 {
 	return leftOperand->evaluate(e) == rightOperand->evaluate(e);
-
 }
 
 double OperatorNotEqual::evaluate(const CommandsEnvironment& e)
