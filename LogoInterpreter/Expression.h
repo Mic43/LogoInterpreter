@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <string>
 
 class CommandsEnvironment;
@@ -7,98 +8,113 @@ class Expression
 {
 public:
 	virtual ~Expression() = default;
-	virtual double evaluate(const CommandsEnvironment&) = 0;
+	virtual double evaluate(const CommandsEnvironment&) const = 0;
 };
 
 class OperatorExpression : public Expression
 {
 protected:
-	Expression* leftOperand;
-	Expression* rightOperand;
+	std::unique_ptr<Expression> leftOperand;
+	std::unique_ptr<Expression> rightOperand;
 
 public:
 
-	OperatorExpression(Expression* left_operand, Expression* right_operand)
-		: leftOperand(left_operand),
-		  rightOperand(right_operand)
+
+	OperatorExpression(std::unique_ptr<Expression> left_operand, 
+		std::unique_ptr<Expression> right_operand)
+		: leftOperand(std::move(left_operand)),
+		  rightOperand(std::move(right_operand))
 	{
 	}
-
-	double evaluate(const CommandsEnvironment&) = 0 ;
+	
 };
 
 class OperatorAdd : public OperatorExpression
 {
 public:
-	OperatorAdd(Expression* left_operand, Expression* right_operand)
-		: OperatorExpression(left_operand, right_operand)
+
+
+	OperatorAdd(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
 
-	double evaluate(const CommandsEnvironment&) override;
+	double evaluate(const CommandsEnvironment&) const override;
 };
 
 class OperatorMul : public OperatorExpression
 {
 public:
-	OperatorMul(Expression* left_operand, Expression* right_operand)
-		: OperatorExpression(left_operand, right_operand)
+
+
+	OperatorMul(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
 
-	double evaluate(const CommandsEnvironment&) override;
+	double evaluate(const CommandsEnvironment&) const override;
 };
 class OperatorSub : public OperatorExpression
 {
 public:
-	OperatorSub(Expression* left_operand, Expression* right_operand)
-		: OperatorExpression(left_operand, right_operand)
+
+
+	OperatorSub(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
 
-	double evaluate(const CommandsEnvironment&) override;
+	double evaluate(const CommandsEnvironment&) const override;
 };
 
 class OperatorGreater : public OperatorExpression
 {
 public:
-	OperatorGreater(Expression* left_operand, Expression* right_operand)
-		: OperatorExpression(left_operand, right_operand)
+
+
+	OperatorGreater(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
 
-	double evaluate(const CommandsEnvironment& e) override;
+	double evaluate(const CommandsEnvironment& e) const override;
 };
 
 class OperatorLess : public OperatorExpression
 {
 public:
-	OperatorLess(Expression* left_operand, Expression* right_operand)
-		: OperatorExpression(left_operand, right_operand)
+
+
+	OperatorLess(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
 
-	double evaluate(const CommandsEnvironment& e) override;
+	double evaluate(const CommandsEnvironment& e) const override;
 };
 class OperatorEqual : public OperatorExpression
 {
 public:
-	OperatorEqual(Expression* left_operand, Expression* right_operand)
-		: OperatorExpression(left_operand, right_operand)
+
+
+	OperatorEqual(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
 
-	double evaluate(const CommandsEnvironment& e) override;
+	double evaluate(const CommandsEnvironment& e) const override;
 };
 class OperatorNotEqual : public OperatorExpression
 {
 public:
-	OperatorNotEqual(Expression* left_operand, Expression* right_operand)
-		: OperatorExpression(left_operand, right_operand)
+
+
+	OperatorNotEqual(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
 
-	double evaluate(const CommandsEnvironment& e) override;
+	double evaluate(const CommandsEnvironment& e) const override;
 };
 
 class ConstantExpresion : public Expression
@@ -109,7 +125,7 @@ public:
 	{
 	}
 
-	virtual double evaluate(const CommandsEnvironment&) override;
+	virtual double evaluate(const CommandsEnvironment&) const override;
 private:
 	double value;
 
@@ -119,7 +135,7 @@ class VarExpresion : public Expression
 private:
 	std::string name;
 public:
-	virtual double evaluate(const CommandsEnvironment&) override;
+	virtual double evaluate(const CommandsEnvironment&) const override;
 
 
 	explicit VarExpresion(const std::string& name)

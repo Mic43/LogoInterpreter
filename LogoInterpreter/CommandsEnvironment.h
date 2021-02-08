@@ -12,19 +12,20 @@ class Procedure
 {
 	std::vector<std::string> parameters;
 	std::string name;
-	Command* body;
+	std::unique_ptr<Command> body;
 
 public:
-	Procedure(const std::vector<std::string>& parameters, const std::string& name, Command* body)
+	Procedure(const std::vector<std::string>& parameters, const std::string& name, 
+		std::unique_ptr<Command> body)
 		: parameters(parameters),
-		  name(name),
-		  body(body)
+		  name(name), body(std::move(body))
+
 	{
 	}
 
-	Command* get_body() const
+	const Command& get_body() const
 	{
-		return body;
+		return *body;
 	}
 
 	const std::vector<std::string>& get_parameters() const

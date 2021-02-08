@@ -3,9 +3,9 @@
 #include <algorithm>
 using namespace std;
 
-std::vector<Expression*> Parser::parseParameterList(const std::vector<Token*>::iterator& token)
+std::vector<unique_ptr<Expression>> Parser::parseParameterList(const std::vector<unique_ptr<Token>>::iterator& token)
 {
-	return vector<Expression*>();
+	return vector<std::unique_ptr<Expression>>();
 }
 
 std::shared_ptr<Command> Parser::parse()
@@ -14,7 +14,7 @@ std::shared_ptr<Command> Parser::parse()
 	return parse(token);
 }
 
-shared_ptr<Command> Parser::parse(std::vector<Token*>::iterator& token)
+shared_ptr<Command> Parser::parse(vector<unique_ptr<Token>>::iterator& token)
 {
 	//shared_ptr<Command> res = make_shared<EmptyCommand>();
 	
@@ -26,7 +26,7 @@ shared_ptr<Command> Parser::parse(std::vector<Token*>::iterator& token)
 		case TokenType::Identifier:
 		{
 			string name = (*token)->get_content();
-			vector<Expression*> parameters = parseParameterList(token);
+			vector<unique_ptr<Expression>> parameters = parseParameterList(token);
 			++token;
 				
 			if ((*token)->get_type() == TokenType::Semicolon)

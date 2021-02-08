@@ -14,7 +14,7 @@ class CommandsVisitorBase;
 class Command
 {
 public:
-	virtual void accept(CommandsVisitorBase&) = 0;
+	virtual void accept(CommandsVisitorBase&) const = 0;
 };
 class SingleCommand : public Command
 {
@@ -24,44 +24,42 @@ class SingleCommand : public Command
 class EmptyCommand : public SingleCommand
 {
 	// Inherited via SingleCommand
-	virtual void accept(CommandsVisitorBase&) override;
+	virtual void accept(CommandsVisitorBase&) const override;
 	
 };
 
 class SequentialCommand : public Command
 {
 public:
-
-	
-	SequentialCommand(SingleCommand* c, Command* n) : command(c),nextCommand(n)
+	SequentialCommand(std::unique_ptr<SingleCommand> command, std::unique_ptr<Command> next_command)
+		: command(std::move(command)),
+		  nextCommand(std::move(next_command))
 	{
-
 	}
 
-public:
-	SingleCommand* get_command() const
+	const SingleCommand& get_command() const
 	{
-		return command;
+		return *command;
 	}
 
-	Command* get_next_command() const
+	const Command& get_next_command() const
 	{
-		return nextCommand;
+		return *nextCommand;
 	}
 
 private:
-	SingleCommand* command;
-	Command* nextCommand;
+	std::unique_ptr<SingleCommand> command;
+	std::unique_ptr<Command> nextCommand;
 	
 	// Inherited via Command
-	virtual void accept(CommandsVisitorBase&) override;
+	virtual void accept(CommandsVisitorBase&) const  override;
 
 };
 
 class CallCommand : public SingleCommand
 {
 public:
-	std::vector<Expression*> get_parameters() const
+	const std::vector<std::unique_ptr<Expression>>& get_parameters() const
 	{
 		return parameters;
 	}
@@ -71,36 +69,34 @@ public:
 		return targetName;
 	}
 
-	void accept(CommandsVisitorBase&) override;
+	void accept(CommandsVisitorBase&) const override;
 
-	CallCommand(const std::vector<Expression*>& parameters, const std::string& target_name)
-		: parameters(parameters),
+	CallCommand(std::vector<std::unique_ptr<Expression>> parameters, const std::string& target_name)
+		: parameters(std::move(parameters)),
 		  targetName(target_name)
 	{
 	}
 
 private:
-	std::vector<Expression*> parameters;
+	std::vector<std::unique_ptr<Expression>> parameters;
 	std::string targetName;
 };
 
 class DeclareProcedureCommand : public SingleCommand
 {
 public:
-	Procedure* get_target() const
+	const Procedure& get_target() const
 	{
-		return target;
+		return *target;
 	}
 
 private:
-	Procedure* target;
+	std::unique_ptr<Procedure> target;	
 public:
-	explicit DeclareProcedureCommand(Procedure* target)
-		: target(target)
-	{
-	}
+	explicit DeclareProcedureCommand(std::unique_ptr<Procedure> target):
+			target(std::move(target)) {}
 
-	void accept(CommandsVisitorBase&) override;
+	void accept(CommandsVisitorBase&)  const override;
 
 
 };
@@ -108,19 +104,19 @@ public:
  class TurtleCommand: public SingleCommand
  {
  private :
- 	Expression* parameter;
+	 std::unique_ptr<Expression> parameter;
  public:
  	enum class Direction {Left,Top,Right,Bottom};
 
-    TurtleCommand(Expression* parameter, Direction direction)
-	    : parameter(parameter),
+    TurtleCommand(std::unique_ptr<Expression> parameter, Direction direction)
+	    : parameter(std::move(parameter)),
 	      direction(direction)
     {
     }
 
-    Expression* get_parameter() const
+    Expression& get_parameter() const
     {
-	    return parameter;
+	    return *parameter;
     }
 
     Direction get_direction() const
@@ -128,8 +124,10 @@ public:
 	    return direction;
     }
 
- 	void accept(CommandsVisitorBase& v) override;
-	static std::shared_ptr<TurtleCommand> tryCreate(const std:: string& identifier, const std::vector<Expression*> &parameter)
+ 	void accept(CommandsVisitorBase& v)  const override;
+	static std::shared_ptr<TurtleCommand> tryCreate(
+		const std::string& identifier, 
+		const std::vector<std::unique_ptr<Expression>> &parameter)
 	{
 		if( identifier == "przod")
 			return std::make_shared<TurtleCommand>(parameter.front(), Direction::Top);
@@ -142,24 +140,29 @@ public:
 class IfCommand : public SingleCommand
 {
 public:
-	Expression* get_condition() const
-	{
-		return condition_;
-	}
-
-	Command* get_body() const
-	{
-		return body_;
-	}
+	
 
 private:
-	Expression* condition_;
-	Command* body_;
+	std::unique_ptr<Expression> condition_;
+	std::unique_ptr<Command> body_;
 public:
 
-	IfCommand(Expression* condition,Command* body): condition_(condition), body_(body)
+
+	const Expression& get_condition() const
 	{
-		
+		return *condition_;
 	}
-	void accept(CommandsVisitorBase&) override;
+
+	const Command& get_body() const
+	{
+		return *body_;
+	}
+
+	IfCommand(std::unique_ptr<Expression> condition, std::unique_ptr<Command> body)
+		: condition_(std::move(condition)),
+		  body_(std::move(body))
+	{
+	}
+
+	void accept(CommandsVisitorBase&)  const override;
 };

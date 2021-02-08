@@ -10,8 +10,8 @@ using namespace std;
 
 void CommandsVisitor::onVisit(const IfCommand& command)
 {
-	if (command.get_condition()->evaluate(environment))
-		command.get_body()->accept(*this);
+	if (command.get_condition().evaluate(environment))
+		command.get_body().accept(*this);
 }
 
 void CommandsVisitor::onVisit(const EmptyCommand& e)

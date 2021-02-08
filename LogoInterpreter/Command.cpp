@@ -5,32 +5,32 @@
 using namespace std;
 
 
-void SequentialCommand::accept(CommandsVisitorBase& v)
+void SequentialCommand::accept(CommandsVisitorBase& v)const
 {
 	v.onVisit(*this);
 }
 
-void EmptyCommand::accept(CommandsVisitorBase& v)
+void EmptyCommand::accept(CommandsVisitorBase& v) const
 {
 	v.onVisit(*this);
 }
 
-void CallCommand::accept(CommandsVisitorBase& v)
+void CallCommand::accept(CommandsVisitorBase& v)const
 {
 	v.onVisit(*this);
 }
 
-void DeclareProcedureCommand::accept(CommandsVisitorBase& v)
+void DeclareProcedureCommand::accept(CommandsVisitorBase& v)const
 {
 	v.onVisit(*this);
 }
 
-void TurtleCommand::accept(CommandsVisitorBase& v)
+void TurtleCommand::accept(CommandsVisitorBase& v)const
 {
 	v.onVisit(*this);
 }
 
-void IfCommand::accept(CommandsVisitorBase& v)
+void IfCommand::accept(CommandsVisitorBase& v)const
 {
 	v.onVisit(*this);
 
