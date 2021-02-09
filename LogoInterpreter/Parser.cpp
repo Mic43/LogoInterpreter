@@ -1,14 +1,58 @@
 ﻿#include "Parser.h"
 #include "Token.h"
 #include <algorithm>
+#include <stack>
 #include <stdexcept>
 #include "CommandsEnvironment.h"
 using namespace std;
 
-std::shared_ptr<Expression> Parser::parseExpression(std::vector<std::shared_ptr<Token>>::iterator& token)
+std::shared_ptr<Expression> Parser::parseValue(const Token& token)	
+{	
+	switch (token.get_type())
+	{
+	case TokenType::Identifier:
+		return (make_shared<VarExpression>(token.get_content()));
+	case TokenType::Number:
+		return make_shared<ConstantExpresion>(stod(token.get_content()));
+	default:
+		throw runtime_error("badly formed parameter list");
+	}
+}
+
+std::shared_ptr<Expression> Parser::parseOperator(const Token& oper,
+	const Token& operand1, const Token& operand2)
 {
-	token += 2;
-	return 	make_shared<ConstantExpresion>(0);
+	auto op1Exp = parseValue(operand1);
+	auto op2Exp = parseValue(operand2);
+
+	return OperatorExpression::tryCreateFromToken(oper, op1Exp, op2Exp);
+}
+
+std::shared_ptr<Expression> Parser::parseExpression(std::vector<std::shared_ptr<Token>>::iterator& token,bool& endReached)
+{
+	stack<std::shared_ptr<Token>> stack;
+
+	while (token != tokens.end() && (*token)->get_type() != TokenType::Comma && (*token)->get_type() != TokenType::ClosePar)
+	{
+		stack.push(*token);
+		++token;
+	}
+	assumeNotLast(token);
+	endReached = (*token)->get_type() == TokenType::ClosePar;
+	++token;
+	if (stack.size() == 1)
+	{		
+		return parseValue(*stack.top());
+	}
+	if (stack.size() == 3)
+	{
+		auto operand2 = stack.top(); stack.pop();
+		auto oper = stack.top(); stack.pop();
+		auto operand1 = stack.top(); stack.pop();
+
+		return parseOperator(*oper, *operand1, *operand2);
+	}
+	throw runtime_error("badly formed expression");
 }
 
 std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<shared_ptr<Token>>::iterator& token)
@@ -18,36 +62,37 @@ std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<share
 		throw runtime_error("badly formed parameter list");
 	++token;
 	
-	vector<shared_ptr<Expression>> res;	
-	while(token != tokens.end() && (*token)->get_type() != TokenType::ClosePar)
+	vector<shared_ptr<Expression>> res;
+	bool end_reached = false;
+	while(token != tokens.end() && !end_reached)
 	{
-		 auto tok = (*token);
-		 switch (tok->get_type())
-		 {
-		 	case TokenType::Identifier:
-		 		res.push_back(make_shared<VarExpression>(tok->get_content()));
-		 		break;
-		 	case TokenType::Number:
-		 		res.push_back(make_shared<ConstantExpresion>(stod(tok->get_content())));
-		 		break;						
-		 	default: ;
-		 		throw runtime_error("badly formed parameter list");
-		 }
-		//res.push_back(parseExpression(token));
+		 // auto tok = (*token);
+		 // switch (tok->get_type())
+		 // {
+		 // 	case TokenType::Identifier:
+		 // 		res.push_back(make_shared<VarExpression>(tok->get_content()));
+		 // 		break;
+		 // 	case TokenType::Number:
+		 // 		res.push_back(make_shared<ConstantExpresion>(stod(tok->get_content())));
+		 // 		break;						
+		 // 	default: ;
+		 // 		throw runtime_error("badly formed parameter list");
+		 // }
+		res.push_back(parseExpression(token, end_reached));
 		
-		auto nextToken = token + 1;
-		if(nextToken == tokens.end())
-			throw runtime_error("badly formed parameter list");
-		if ((*nextToken)->get_type() == TokenType::ClosePar)
-		{
-			token += 2;
-			break;
-		}
-
-		if ((*nextToken)->get_type() != TokenType::Comma)
-			throw runtime_error("badly formed parameter list");
-
-		token += 2;		
+		// auto nextToken = token + 1;
+		// if(nextToken == tokens.end())
+		// 	throw runtime_error("badly formed parameter list");
+		// if ((*nextToken)->get_type() == TokenType::ClosePar)
+		// {
+		// 	token += 2;
+		// 	break;
+		// }
+		//
+		// if ((*nextToken)->get_type() != TokenType::Comma)
+		// 	throw runtime_error("badly formed parameter list");
+		//
+		// token += 2;		
 		
 	}
 	return res;
@@ -115,7 +160,10 @@ shared_ptr<Command> Parser::parse(vector<shared_ptr<Token>>::iterator& token)
 			if ((*token)->get_type() != TokenType::OpenPar)
 				throw runtime_error("expected condition");
 
-			auto expression = parseExpression(++token);
+			bool end;
+			auto expression = parseExpression(++token,end);
+			if (!end)
+				throw runtime_error("malformed if condition");
 			auto body = parse(token);
 			res = make_shared<IfCommand>(expression, body);
 			break;

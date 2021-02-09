@@ -33,7 +33,7 @@ void CommandsVisitor::onVisit(const CallCommand& call_command)
 	
 	if (procedure.get_parameters().size() != parameters.size())
 		throw runtime_error("Procedure " + call_command.get_target_name()
-			+ "does not have " + std::to_string(parameters.size()) + "parameters");
+			+ " does not have " + std::to_string(parameters.size()) + " parameter(s)");
 	
 	map<string, double> nestedVariables;
 		

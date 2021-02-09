@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 
+class Token;
 class CommandsEnvironment;
 
 class Expression
@@ -28,7 +29,8 @@ public:
 	{
 	}
 
-	
+	static std::shared_ptr<OperatorExpression> tryCreateFromToken(const Token& token, 
+		const std::shared_ptr<Expression>& oper1, const std::shared_ptr<Expression>& oper2);
 };
 
 class OperatorAdd : public OperatorExpression
