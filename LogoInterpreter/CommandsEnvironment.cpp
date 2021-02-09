@@ -28,6 +28,7 @@ double CommandsEnvironment::getVariableValue(const std::string& name) const
 CommandsEnvironment CommandsEnvironment::createNestedEnvironment(const CommandsEnvironment& base,
 	const std::map<std::string, double>& newVariables)
 {
+	//TODO: possible errors here
 	CommandsEnvironment ce;
 	ce.functions = base.functions;
 	ce.variables = newVariables;

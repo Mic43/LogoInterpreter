@@ -3,7 +3,7 @@
 
 enum class TokenType
 {
-	Identifier,OpenPar,ClosePar,Number,IfKeyword,Semicolon,Comma,TurtleCommand
+	Identifier,OpenPar,ClosePar,Number,IfKeyword,Semicolon,Comma,EndBlock
 };
 
 class Token

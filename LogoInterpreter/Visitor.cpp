@@ -27,35 +27,28 @@ void CommandsVisitor::onVisit(const SequentialCommand& command)
 
 void CommandsVisitor::onVisit(const CallCommand& call_command)
 {
-	// const Procedure& procedure = environment.getProcedure(call_command.get_target_name());
-	//
-	// const std::vector<std::unique_ptr<Expression>>& parameters = call_command.get_parameters();
-	//
-	// if (procedure.get_parameters().size() != parameters.size())
-	// 	throw runtime_error("Procedure " + call_command.get_target_name()
-	// 		+ "does not have " + std::to_string(parameters.size()) + "parameters");
-	//
-	// map<string, double> nestedVariables;
-	//
-	//
-	// auto paramName = procedure.get_parameters().begin();
-	//
-	// // auto it = parameters.cbegin();
-	// // for (;it!=parameters.cend();++it)
-	// // {
-	// // 	nestedVariables[*paramName] = (*it)->evaluate(environment);
-	// // 	++paramName;
-	// // }
-	// for (const auto& parameterExp : parameters)
-	// {
-	// 	nestedVariables[*paramName] = parameterExp->evaluate(environment);
-	// 	++paramName;
-	// }	
-	// auto nestedEnvironment = 
-	// 	CommandsEnvironment::createNestedEnvironment(this->environment,nestedVariables);
-	// auto nestedVisitor = createNestedVisitor(nestedEnvironment);
-	//
-	// procedure.get_body().accept(nestedVisitor);
+	const Procedure& procedure = environment.getProcedure(call_command.get_target_name());
+	
+	const std::vector<std::shared_ptr<Expression>>& parameters = call_command.get_parameters();
+	
+	if (procedure.get_parameters().size() != parameters.size())
+		throw runtime_error("Procedure " + call_command.get_target_name()
+			+ "does not have " + std::to_string(parameters.size()) + "parameters");
+	
+	map<string, double> nestedVariables;
+		
+	auto paramName = procedure.get_parameters().begin();
+	
+	for (const auto& parameterExp : parameters)
+	{
+		nestedVariables[*paramName] = parameterExp->evaluate(environment);
+		++paramName;
+	}	
+	auto nestedEnvironment = 
+		CommandsEnvironment::createNestedEnvironment(this->environment,nestedVariables);
+	auto nestedVisitor = createNestedVisitor(nestedEnvironment);
+	
+	procedure.get_body().accept(nestedVisitor);
 }
 
 void CommandsVisitor::onVisit(const DeclareProcedureCommand& declare_function_command)

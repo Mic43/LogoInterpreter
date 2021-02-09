@@ -58,10 +58,10 @@ private:
 class CallCommand : public SingleCommand
 {
 public:
-	// const std::vector<std::unique_ptr<Expression>>& get_parameters() const
-	// {
-	// 	return parameters;
-	// }
+	 const std::vector<std::shared_ptr<Expression>>& get_parameters() const
+	 {
+	 	return parameters;
+	 }
 
 	std::string get_target_name() const
 	{

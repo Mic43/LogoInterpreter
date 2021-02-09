@@ -11,17 +11,44 @@ using namespace std;
 
 void main()
 {
-	vector<Token*> tokens;
-	auto semi = make_shared<Token>(";", TokenType::Semicolon);
-	tokens.push_back(semi.get());
-	tokens.push_back(semi.get());
-	tokens.push_back(semi.get());
+	vector<shared_ptr<Token>> tokens;	
+	
+	
+	 tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
+	 tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
+	 tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
+	 tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
+	
+	tokens.push_back(make_shared<Token>("przod", TokenType::Identifier));
+	tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
+	tokens.push_back(make_shared<Token>("5", TokenType::Number));
+	tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
+	tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
+	tokens.push_back(make_shared<Token>("przod", TokenType::Identifier));
+	tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
+	tokens.push_back(make_shared<Token>("7", TokenType::Number));
+	tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
+	tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
+	tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
 
-	//Parser p(tokens);
-	//auto res = p.parse();
+	tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
+	tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
+	tokens.push_back(make_shared<Token>("2", TokenType::Identifier));
+	tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
+	tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
+	
 	
 	CommandsVisitor visitor;
-	//(*res).accept(visitor);
+	try
+	{
+		Parser p(tokens);
+		auto program = p.parse();
+		program->accept(visitor);	
+	}
+	catch (runtime_error& e)
+	{
+		cout << e.what();
+	}
 	// EmptyCommand empty;
 	//
 	// const char* procName = "foo";	
@@ -49,12 +76,5 @@ void main()
 	//
 	// program.accept(visitor);
 	// cout << visitor.get_environment().get_turtle_state()->get_state();
-	// try
-	// {
-	// 	program.accept(visitor);	
-	// }
-	// catch (runtime_error& e)
-	// {
-	// 	cout << e.what();
-	// }
+	
 }
