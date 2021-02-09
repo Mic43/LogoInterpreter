@@ -5,10 +5,15 @@
 #include "CommandsEnvironment.h"
 using namespace std;
 
+std::shared_ptr<Expression> Parser::parseExpression(std::vector<std::shared_ptr<Token>>::iterator& token)
+{
+	token += 2;
+	return 	make_shared<ConstantExpresion>(0);
+}
+
 std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<shared_ptr<Token>>::iterator& token)
 {
-	if (token == tokens.end())	
-		throw runtime_error("Unexpected end of file");	
+	assumeNotLast(token);
 	if ((*token)->get_type() != TokenType::OpenPar)
 		throw runtime_error("badly formed parameter list");
 	++token;
@@ -16,18 +21,20 @@ std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<share
 	vector<shared_ptr<Expression>> res;	
 	while(token != tokens.end() && (*token)->get_type() != TokenType::ClosePar)
 	{
-		auto tok = (*token);
-		switch (tok->get_type())
-		{
-			case TokenType::Identifier:
-				res.push_back(make_shared<VarExpression>(tok->get_content()));
-				break;
-			case TokenType::Number:
-				res.push_back(make_shared<ConstantExpresion>(stod(tok->get_content())));
-				break;						
-			default: ;
-				throw runtime_error("badly formed parameter list");
-		}
+		 auto tok = (*token);
+		 switch (tok->get_type())
+		 {
+		 	case TokenType::Identifier:
+		 		res.push_back(make_shared<VarExpression>(tok->get_content()));
+		 		break;
+		 	case TokenType::Number:
+		 		res.push_back(make_shared<ConstantExpresion>(stod(tok->get_content())));
+		 		break;						
+		 	default: ;
+		 		throw runtime_error("badly formed parameter list");
+		 }
+		//res.push_back(parseExpression(token));
+		
 		auto nextToken = token + 1;
 		if(nextToken == tokens.end())
 			throw runtime_error("badly formed parameter list");
@@ -44,6 +51,12 @@ std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<share
 		
 	}
 	return res;
+}
+
+void Parser::assumeNotLast(std::vector<std::shared_ptr<Token>>::iterator& token)
+{
+	if (token == tokens.end())
+		throw std::runtime_error("unexpected end of file");
 }
 
 std::shared_ptr<Command> Parser::parse()
@@ -64,8 +77,7 @@ shared_ptr<Command> Parser::parse(vector<shared_ptr<Token>>::iterator& token)
 		{
 			string name = (*token)->get_content();
 			vector<shared_ptr<Expression>> parameters = parseParameterList(++token);			
-			if (token == tokens.end())
-				throw runtime_error("unexpected end of file");
+			assumeNotLast(token);
 			if ((*token)->get_type() == TokenType::Semicolon)
 			{
 				++token;
@@ -95,14 +107,25 @@ shared_ptr<Command> Parser::parse(vector<shared_ptr<Token>>::iterator& token)
 			res = std::make_shared<DeclareProcedureCommand>(std::make_shared<Procedure>(paramNames, name, body));
 			break;
 		}
-		case TokenType::IfKeyword:			
+		case TokenType::IfKeyword:
+		{
+			++token;
+
+			assumeNotLast(token);
+			if ((*token)->get_type() != TokenType::OpenPar)
+				throw runtime_error("expected condition");
+
+			auto expression = parseExpression(++token);
+			auto body = parse(token);
+			res = make_shared<IfCommand>(expression, body);
 			break;
+		}
 		case TokenType::Semicolon: 
 			res = std::make_shared<EmptyCommand>();
 			++token;
 			break;
 		default: ;
-			throw runtime_error("error");
+			throw runtime_error("not recognized token type");
 	}
 	if(token == tokens.end())
 		return res;
