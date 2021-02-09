@@ -9,23 +9,25 @@ class Expression
 public:
 	virtual ~Expression() = default;
 	virtual double evaluate(const CommandsEnvironment&) const = 0;
+		
 };
 
 class OperatorExpression : public Expression
 {
 protected:
-	std::unique_ptr<Expression> leftOperand;
-	std::unique_ptr<Expression> rightOperand;
+	std::shared_ptr<Expression> leftOperand;
+	std::shared_ptr<Expression> rightOperand;
 
 public:
 
 
-	OperatorExpression(std::unique_ptr<Expression> left_operand, 
-		std::unique_ptr<Expression> right_operand)
+	OperatorExpression(std::shared_ptr<Expression> left_operand,
+		std::shared_ptr<Expression> right_operand)
 		: leftOperand(std::move(left_operand)),
 		  rightOperand(std::move(right_operand))
 	{
 	}
+
 	
 };
 
@@ -34,7 +36,7 @@ class OperatorAdd : public OperatorExpression
 public:
 
 
-	OperatorAdd(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+	OperatorAdd(std::shared_ptr<Expression> left_operand, std::shared_ptr<Expression> right_operand)
 		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
@@ -47,7 +49,7 @@ class OperatorMul : public OperatorExpression
 public:
 
 
-	OperatorMul(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+	OperatorMul(std::shared_ptr<Expression> left_operand, std::shared_ptr<Expression> right_operand)
 		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
@@ -59,7 +61,7 @@ class OperatorSub : public OperatorExpression
 public:
 
 
-	OperatorSub(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+	OperatorSub(std::shared_ptr<Expression> left_operand, std::shared_ptr<Expression> right_operand)
 		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
@@ -72,7 +74,7 @@ class OperatorGreater : public OperatorExpression
 public:
 
 
-	OperatorGreater(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+	OperatorGreater(std::shared_ptr<Expression> left_operand, std::shared_ptr<Expression> right_operand)
 		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
@@ -85,7 +87,7 @@ class OperatorLess : public OperatorExpression
 public:
 
 
-	OperatorLess(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+	OperatorLess(std::shared_ptr<Expression> left_operand, std::shared_ptr<Expression> right_operand)
 		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
@@ -97,7 +99,7 @@ class OperatorEqual : public OperatorExpression
 public:
 
 
-	OperatorEqual(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+	OperatorEqual(std::shared_ptr<Expression> left_operand, std::shared_ptr<Expression> right_operand)
 		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
@@ -109,7 +111,7 @@ class OperatorNotEqual : public OperatorExpression
 public:
 
 
-	OperatorNotEqual(std::unique_ptr<Expression> left_operand, std::unique_ptr<Expression> right_operand)
+	OperatorNotEqual(std::shared_ptr<Expression> left_operand, std::shared_ptr<Expression> right_operand)
 		: OperatorExpression(std::move(left_operand), std::move(right_operand))
 	{
 	}
@@ -130,7 +132,7 @@ private:
 	double value;
 
 };
-class VarExpresion : public Expression
+class VarExpression : public Expression
 {
 private:
 	std::string name;
@@ -138,7 +140,7 @@ public:
 	virtual double evaluate(const CommandsEnvironment&) const override;
 
 
-	explicit VarExpresion(const std::string& name)
+	explicit VarExpression(const std::string& name)
 		: name(name)
 	{
 	}

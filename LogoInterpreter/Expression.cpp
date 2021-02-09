@@ -45,7 +45,7 @@ double ConstantExpresion::evaluate(const CommandsEnvironment&)const
 	return value;
 }
 
-double VarExpresion::evaluate(const CommandsEnvironment& environment)const
+double VarExpression::evaluate(const CommandsEnvironment& environment)const
 {
 	return environment.getVariableValue(name);
 }

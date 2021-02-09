@@ -13,11 +13,11 @@ class Procedure
 {
 	std::vector<std::string> parameters;
 	std::string name;
-	std::unique_ptr<Command> body;
+	std::shared_ptr<Command> body;
 
 public:
 	Procedure(const std::vector<std::string>& parameters, const std::string& name, 
-		std::unique_ptr<Command> body)
+		std::shared_ptr<Command> body)
 		: parameters(parameters),
 		  name(name), body(std::move(body))
 

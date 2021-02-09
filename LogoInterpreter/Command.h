@@ -30,9 +30,9 @@ class EmptyCommand : public SingleCommand
 class SequentialCommand : public Command
 {
 public:
-	SequentialCommand(std::unique_ptr<SingleCommand> command, std::unique_ptr<Command> next_command)
-		: command(std::move(command)),
-		  nextCommand(std::move(next_command))
+	SequentialCommand(std::shared_ptr<SingleCommand> command, std::shared_ptr<Command> next_command)
+		: command(command),
+		  nextCommand(next_command)
 	{
 	}
 
@@ -47,8 +47,8 @@ public:
 	}
 
 private:
-	std::unique_ptr<SingleCommand> command;
-	std::unique_ptr<Command> nextCommand;
+	std::shared_ptr<SingleCommand> command;
+	std::shared_ptr<Command> nextCommand;
 	
 	// Inherited via Command
 	virtual void accept(CommandsVisitorBase&) const  override;
@@ -58,10 +58,10 @@ private:
 class CallCommand : public SingleCommand
 {
 public:
-	const std::vector<std::unique_ptr<Expression>>& get_parameters() const
-	{
-		return parameters;
-	}
+	// const std::vector<std::unique_ptr<Expression>>& get_parameters() const
+	// {
+	// 	return parameters;
+	// }
 
 	std::string get_target_name() const
 	{
@@ -70,14 +70,14 @@ public:
 
 	void accept(CommandsVisitorBase&) const override;
 
-	CallCommand(std::vector<std::unique_ptr<Expression>> parameters, const std::string& target_name)
+	CallCommand(std::vector<std::shared_ptr<Expression>> parameters, const std::string& target_name)
 		: parameters(std::move(parameters)),
 		  targetName(target_name)
 	{
 	}
 
 private:
-	std::vector<std::unique_ptr<Expression>> parameters;
+	std::vector<std::shared_ptr<Expression>> parameters;
 	std::string targetName;
 };
 
@@ -106,11 +106,11 @@ public:
  class TurtleCommand: public SingleCommand
  {
  private :
-	 std::unique_ptr<Expression> parameter;
+	 std::shared_ptr<Expression> parameter;
  public:
  	enum class Direction {Left,Top,Right,Bottom};
 
-    TurtleCommand(std::unique_ptr<Expression> parameter, Direction direction)
+    TurtleCommand(std::shared_ptr<Expression> parameter, Direction direction)
 	    : parameter(std::move(parameter)),
 	      direction(direction)
     {
@@ -129,11 +129,11 @@ public:
  	void accept(CommandsVisitorBase& v)  const override;
 	static std::shared_ptr<TurtleCommand> tryCreate(
 		const std::string& identifier, 
-		const std::vector<std::unique_ptr<Expression>> &parameter)
+		const std::vector<std::shared_ptr<Expression>> &parameter)
 	{
-		if( identifier == "przod")
-			return std::make_shared<TurtleCommand>(parameter.front(), Direction::Top);
-		return std::unique_ptr<TurtleCommand>{};
+		 if( identifier == "przod")
+		 	return std::make_shared<TurtleCommand>(parameter.front(), Direction::Top);
+		 return std::unique_ptr<TurtleCommand>{};
 	}
  private:
 	 Direction direction;
@@ -145,8 +145,8 @@ public:
 	
 
 private:
-	std::unique_ptr<Expression> condition_;
-	std::unique_ptr<Command> body_;
+	std::shared_ptr<Expression> condition_;
+	std::shared_ptr<Command> body_;
 public:
 
 
@@ -160,7 +160,7 @@ public:
 		return *body_;
 	}
 
-	IfCommand(std::unique_ptr<Expression> condition, std::unique_ptr<Command> body)
+	IfCommand(std::shared_ptr<Expression> condition, std::shared_ptr<Command> body)
 		: condition_(std::move(condition)),
 		  body_(std::move(body))
 	{
