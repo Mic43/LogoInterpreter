@@ -13,10 +13,10 @@ class Token;
 class Parser
 {
 	std::vector<std::shared_ptr<Token>> tokens;
-	std::shared_ptr<Expression> parseValue(const Token& token);
+	std::shared_ptr<Expression> parseValue(const Token& token) const;
 	std::shared_ptr<Expression> parseOperator(
 		const Token& oper,
-		const Token& operand1, const Token& operand2);
+		const Token& operand1, const Token& operand2) const;
 	std::shared_ptr<Expression> parseExpression(std::vector<std::shared_ptr<Token>>::iterator& token, bool& endReached);
 	std::vector<std::shared_ptr<Expression>> parseParameterList(std::vector<std::shared_ptr<Token>>::iterator& token);
 

@@ -3,6 +3,7 @@
 
 #include "Command.h"
 #include "Parser.h"
+#include "Scanner.h"
 #include "Token.h"
 #include "Visitor.h"
 
@@ -11,8 +12,8 @@ using namespace std;
 
 void main()
 {
-	vector<shared_ptr<Token>> tokens;	
-	
+	vector<shared_ptr<Token>> tokens;
+
 	//
 	//  tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
 	//  tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
@@ -36,73 +37,73 @@ void main()
 	// tokens.push_back(make_shared<Token>("3", TokenType::Number));
 	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
 	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-	
 
 
-	  tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
-	  tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	  tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	  tokens.push_back(make_shared<Token>(",", TokenType::Comma));
-	  tokens.push_back(make_shared<Token>("y", TokenType::Identifier));
-	  tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
 
-
-	  tokens.push_back(make_shared<Token>("przod", TokenType::Identifier));
-	  tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	  tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	  tokens.push_back(make_shared<Token>("+", TokenType::Operator));
-	  tokens.push_back(make_shared<Token>("y", TokenType::Identifier));
-	  tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	  tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-
-		
-	tokens.push_back(make_shared<Token>("if", TokenType::IfKeyword));
-	tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	tokens.push_back(make_shared<Token>(">", TokenType::Operator));
-	tokens.push_back(make_shared<Token>("0", TokenType::Number));
-
-	tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-		
-	tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
-	tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	tokens.push_back(make_shared<Token>("-", TokenType::Operator));
-	tokens.push_back(make_shared<Token>("1", TokenType::Number));
-	tokens.push_back(make_shared<Token>(",", TokenType::Comma));
-	tokens.push_back(make_shared<Token>("y", TokenType::Identifier));
-	tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-	
-	tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
+	// tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
+	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>(",", TokenType::Comma));
+	// tokens.push_back(make_shared<Token>("y", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
 	//
+	//
+	// tokens.push_back(make_shared<Token>("przod", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
+	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>("+", TokenType::Operator));
+	// tokens.push_back(make_shared<Token>("y", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
+	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
+	//
+	//
+	// tokens.push_back(make_shared<Token>("if", TokenType::IfKeyword));
+	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
+	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>(">", TokenType::Operator));
+	// tokens.push_back(make_shared<Token>("0", TokenType::Number));
+	//
+	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
+	//
+	// tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
+	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>("-", TokenType::Operator));
+	// tokens.push_back(make_shared<Token>("1", TokenType::Number));
+	// tokens.push_back(make_shared<Token>(",", TokenType::Comma));
+	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
+	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
+	//
+	// tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
+	// //
+	//
+	//
+	// tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
+	//
+	// tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
+	// tokens.push_back(make_shared<Token>("5", TokenType::Number));
+	// tokens.push_back(make_shared<Token>(",", TokenType::Comma));
+	// tokens.push_back(make_shared<Token>("3", TokenType::Number));
+	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
+	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
+	// //
+	// tokens.push_back(make_shared<Token>("przod", TokenType::Identifier));
+	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
+	// tokens.push_back(make_shared<Token>("5", TokenType::Number));
+	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
+	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
+   //tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
 
-	
-	tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
-
-	 tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
-	 tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	 tokens.push_back(make_shared<Token>("5", TokenType::Number));
-	 tokens.push_back(make_shared<Token>(",", TokenType::Comma));
-	 tokens.push_back(make_shared<Token>("3", TokenType::Number));
-	 tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	 tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-	 //
-	 // tokens.push_back(make_shared<Token>("przod", TokenType::Identifier));
-	 // tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	 // tokens.push_back(make_shared<Token>("5", TokenType::Number));
-	 // tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	 // tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-	//tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
-
-	
-	
+	string input = "";		
 	CommandsVisitor visitor;
 	try
 	{
+		Scanner s(input);
 		Parser p(tokens);
 		auto program = p.parse();
-		program->accept(visitor);	
+		program->accept(visitor);
 	}
 	catch (runtime_error& e)
 	{
@@ -135,5 +136,5 @@ void main()
 	//
 	// program.accept(visitor);
 	// cout << visitor.get_environment().get_turtle_state()->get_state();
-	
+
 }

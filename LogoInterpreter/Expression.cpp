@@ -65,7 +65,6 @@ double OperatorEqual::evaluate(const CommandsEnvironment& e)const
 double OperatorNotEqual::evaluate(const CommandsEnvironment& e)const
 {
 	return leftOperand->evaluate(e) != rightOperand->evaluate(e);
-
 }
 
 double ConstantExpresion::evaluate(const CommandsEnvironment&)const

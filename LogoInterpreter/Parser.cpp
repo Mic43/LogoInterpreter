@@ -6,7 +6,7 @@
 #include "CommandsEnvironment.h"
 using namespace std;
 
-std::shared_ptr<Expression> Parser::parseValue(const Token& token)	
+std::shared_ptr<Expression> Parser::parseValue(const Token& token) const
 {	
 	switch (token.get_type())
 	{
@@ -20,7 +20,7 @@ std::shared_ptr<Expression> Parser::parseValue(const Token& token)
 }
 
 std::shared_ptr<Expression> Parser::parseOperator(const Token& oper,
-	const Token& operand1, const Token& operand2)
+	const Token& operand1, const Token& operand2) const
 {
 	auto op1Exp = parseValue(operand1);
 	auto op2Exp = parseValue(operand2);
@@ -65,35 +65,8 @@ std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<share
 	vector<shared_ptr<Expression>> res;
 	bool end_reached = false;
 	while(token != tokens.end() && !end_reached)
-	{
-		 // auto tok = (*token);
-		 // switch (tok->get_type())
-		 // {
-		 // 	case TokenType::Identifier:
-		 // 		res.push_back(make_shared<VarExpression>(tok->get_content()));
-		 // 		break;
-		 // 	case TokenType::Number:
-		 // 		res.push_back(make_shared<ConstantExpresion>(stod(tok->get_content())));
-		 // 		break;						
-		 // 	default: ;
-		 // 		throw runtime_error("badly formed parameter list");
-		 // }
-		res.push_back(parseExpression(token, end_reached));
-		
-		// auto nextToken = token + 1;
-		// if(nextToken == tokens.end())
-		// 	throw runtime_error("badly formed parameter list");
-		// if ((*nextToken)->get_type() == TokenType::ClosePar)
-		// {
-		// 	token += 2;
-		// 	break;
-		// }
-		//
-		// if ((*nextToken)->get_type() != TokenType::Comma)
-		// 	throw runtime_error("badly formed parameter list");
-		//
-		// token += 2;		
-		
+	{		
+		res.push_back(parseExpression(token, end_reached));			
 	}
 	return res;
 }
@@ -120,9 +93,12 @@ shared_ptr<Command> Parser::parse(vector<shared_ptr<Token>>::iterator& token)
 	{		
 		case TokenType::Identifier:
 		{
+			
 			string name = (*token)->get_content();
 			vector<shared_ptr<Expression>> parameters = parseParameterList(++token);			
 			assumeNotLast(token);
+
+			// handle call
 			if ((*token)->get_type() == TokenType::Semicolon)
 			{
 				++token;
@@ -136,6 +112,7 @@ shared_ptr<Command> Parser::parse(vector<shared_ptr<Token>>::iterator& token)
 				break;
 			}
 
+			// handle procedure declaration
 			vector<string> paramNames(parameters.size());
 			std::transform(parameters.begin(), parameters.end(), paramNames.begin(), 
 				[](auto exp)
@@ -172,8 +149,15 @@ shared_ptr<Command> Parser::parse(vector<shared_ptr<Token>>::iterator& token)
 			res = std::make_shared<EmptyCommand>();
 			++token;
 			break;
-		default: ;
-			throw runtime_error("not recognized token type");
+		case TokenType::OpenPar: 
+		case TokenType::ClosePar: 
+		case TokenType::Number: 
+		case TokenType::Comma: 
+		case TokenType::EndBlock: 
+		case TokenType::Operator:
+			throw runtime_error("Symbol not expected");
+		default:
+			throw runtime_error("Not recognized token type");
 	}
 	if(token == tokens.end())
 		return res;
