@@ -96,8 +96,9 @@ void main()
 	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
    //tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
 
-	string input = "foo(x,n) if (n > 0) przod(x); przod(45);foo(x*0.75,n-1);przod(90);;foo(x*0.75,n-1);przod(45);przod(x);end;end; foo(20,3);";
-	CommandsVisitor visitor;
+	string input = "foo(x,n) if (n > 0) przod(x); lewo(45);foo(x*0.75,n-1);prawo(90);;foo(x*0.75,n-1);lewo(45);tyl(x);end;end; foo(20,3);";
+	int boardSize = 100;
+	CommandsVisitor visitor(std::make_shared<TurtleState>(boardSize));
 	try
 	{
 		Scanner s(input);
@@ -111,32 +112,14 @@ void main()
 	{
 		cout << e.what();
 	}
-	// EmptyCommand empty;
-	//
-	// const char* procName = "foo";	
-	// vector<string> params{ "k" };
-	//
-	// VarExpresion var (params[0]);
-	//
-	// TurtleCommand turtleCmd(&var,TurtleCommand::Direction::Left);
-	// vector<Expression*> v2{ &var };
-	// CallCommand call2(v2, procName);
-	// SequentialCommand s(&turtleCmd, &call2);
-	// Command* body = &s;
-	//
-	//
-	// ConstantExpresion constant(10);
-	// vector<Expression*> v{ &constant };
-	// CallCommand call(v, procName);
-	//
-	// Procedure p(params, procName, body);
-	// DeclareProcedureCommand procedure_command(&p);
-	//
-	//
-	// auto cmd = SequentialCommand(&procedure_command, &call);
-	// Command& program = cmd;
-	//
-	// program.accept(visitor);
-	// cout << visitor.get_environment().get_turtle_state()->get_state();
-
+	auto turtle_state = visitor.get_environment().get_turtle_state();
+	
+	for (int i = 0; i < turtle_state->get_board_size(); ++i)
+	{
+		for (int j = 0; j < turtle_state->get_board_size(); ++j)
+		{
+			cout << (turtle_state->getState(j,i) ? "*" : " ");
+		}
+		cout << endl;
+	}		
 }

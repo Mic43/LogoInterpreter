@@ -29,10 +29,9 @@ CommandsEnvironment CommandsEnvironment::createNestedEnvironment(const CommandsE
 	const std::map<std::string, double>& newVariables)
 {
 	//TODO: possible errors here
-	CommandsEnvironment ce;
+	CommandsEnvironment ce(base.turtle_state);
 	ce.functions = base.functions;
 	ce.variables = newVariables;
-	ce.turtle_state = base.turtle_state;
 	return ce;
 }
 

@@ -60,22 +60,30 @@ void CommandsVisitor::onVisit(const DeclareProcedureCommand& declare_function_co
 
 CommandsVisitor CommandsVisitor::createNestedVisitor(const CommandsEnvironment& nestedEnvironment)
 {
-	 CommandsVisitor v;
-	 v.environment = nestedEnvironment;
+	 CommandsVisitor v(nestedEnvironment);	 
 	 return v;
 }
 
 void CommandsVisitor::onVisit(const TurtleCommand& turtle_command)
 {
 	double val = turtle_command.get_parameter().evaluate(environment);
-	// switch (turtle_command.get_direction())
-	// {
-	// 	case TurtleCommand::Direction::Left: break;		
-	// 	case TurtleCommand::Direction::Top: break;
-	// 	case TurtleCommand::Direction::Right: break;
-	// 	case TurtleCommand::Direction::Bottom: break;
-	// 	default: ;
-	// }
-	environment.get_turtle_state()->test(val);
+	auto ts =  environment.get_turtle_state();
+	//environment.get_turtle_state()->move(static_cast<int>(val), turtle_command.get_type());
+	switch (turtle_command.get_type())
+	{
+		case TurtleCommand::Type::Left: 
+			ts->turn(-val);
+			break;
+		case TurtleCommand::Type::Right:
+			ts->turn(val);
+			break;
+		case TurtleCommand::Type::Forward:
+			ts->forward(val);
+			break;
+		case TurtleCommand::Type::Backward:
+			ts->backward(val);
+			break;
+		default: ;
+	}
 }
 

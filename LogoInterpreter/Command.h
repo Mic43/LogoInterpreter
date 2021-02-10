@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Expression.h"
+#include "TurtleState.h"
 //#include "Visitor.h"
 
 class Procedure;
@@ -105,14 +106,16 @@ public:
 
  class TurtleCommand: public SingleCommand
  {
- private :
-	 std::shared_ptr<Expression> parameter;
  public:
- 	enum class Direction {Left,Top,Right,Bottom};
-
-    TurtleCommand(std::shared_ptr<Expression> parameter, Direction direction)
+	 enum class Type { Left, Right, Forward, Backward };
+ private :	
+	 Type type;
+	 std::shared_ptr<Expression> parameter;
+ public: 
+	
+    TurtleCommand(std::shared_ptr<Expression> parameter, Type type)
 	    : parameter(std::move(parameter)),
-	      direction(direction)
+		type(type)
     {
     }
 
@@ -121,9 +124,9 @@ public:
 	    return *parameter;
     }
 
-    Direction get_direction() const
+	Type get_type() const
     {
-	    return direction;
+	    return type;
     }
 
  	void accept(CommandsVisitorBase& v)  const override;
@@ -132,11 +135,15 @@ public:
 		const std::vector<std::shared_ptr<Expression>> &parameter)
 	{
 		 if( identifier == "przod")
-		 	return std::make_shared<TurtleCommand>(parameter.front(), Direction::Top);
+		 	return std::make_shared<TurtleCommand>(parameter.front(),Type::Forward);
+		 if (identifier == "tyl")
+			 return std::make_shared<TurtleCommand>(parameter.front(), Type::Backward);
+		 if (identifier == "lewo")
+			 return std::make_shared<TurtleCommand>(parameter.front(), Type::Left);
+		 if (identifier == "prawo")
+			 return std::make_shared<TurtleCommand>(parameter.front(), Type::Right);
 		 return std::unique_ptr<TurtleCommand>{};
 	}
- private:
-	 Direction direction;
  };
 
 class IfCommand : public SingleCommand

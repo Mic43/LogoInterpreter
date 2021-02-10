@@ -47,7 +47,7 @@ class CommandsEnvironment
 	std::shared_ptr<TurtleState> turtle_state;
 
 public:
-	CommandsEnvironment(): turtle_state(std::make_shared<TurtleState>())
+	CommandsEnvironment(std::shared_ptr<TurtleState> turtle_state): turtle_state(turtle_state)
 	{
 	}
 	

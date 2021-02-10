@@ -23,6 +23,16 @@ private:
 	CommandsEnvironment environment;
 
 public:
+
+	explicit CommandsVisitor(const CommandsEnvironment& environment)
+		: environment(environment)
+	{
+	}
+	explicit CommandsVisitor(std::shared_ptr<TurtleState> turtleState)
+		: environment(CommandsEnvironment(turtleState))
+	{
+	}
+
 	CommandsEnvironment get_environment() const
 	{
 		return environment;
