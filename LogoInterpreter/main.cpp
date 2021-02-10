@@ -97,6 +97,9 @@ void main()
    //tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
 
 	string input = "foo(x,n) if (n > 0) przod(x); lewo(45);foo(x*0.75,n-1);prawo(90);;foo(x*0.75,n-1);lewo(45);tyl(x);end;end; foo(20,3);";
+
+	//string input = "przod(3);prawo(45);przod(10);lewo(135);przod(4);";
+
 	int boardSize = 100;
 	CommandsVisitor visitor(std::make_shared<TurtleState>(boardSize));
 	try
