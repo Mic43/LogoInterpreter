@@ -83,11 +83,11 @@ std::shared_ptr<Command> Parser::parse()
 	return parse(token);
 }
 
-shared_ptr<Command> Parser::parse(vector<Token>::iterator& token)
+shared_ptr<Command> Parser::parse(vector<Token>::iterator& token,string blockName)
 {
 	//shared_ptr<Command> res = make_shared<EmptyCommand>();
 
-	shared_ptr<SingleCommand> res = make_shared<EmptyCommand>();
+	shared_ptr<SingleCommand> res;
 	
 	switch (token->get_type())
 	{		
@@ -125,7 +125,7 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token)
 					throw runtime_error("error parsing procedure definition");
 				});
 
-			auto body = parse(token);
+			auto body = parse(token,name);
 			res = std::make_shared<DeclareProcedureCommand>(std::make_shared<Procedure>(paramNames, name, body));
 			break;
 		}
@@ -141,7 +141,7 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token)
 			auto expression = parseExpression(++token,end);
 			if (!end)
 				throw runtime_error("malformed if condition");
-			auto body = parse(token);
+			auto body = parse(token,"if");
 			res = make_shared<IfCommand>(expression, body);
 			break;
 		}
@@ -163,8 +163,14 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token)
 		return res;
 	if (token->get_type() == TokenType::EndBlock)
 	{
+		assumeNotLast(token);
+		if ((++token)->get_content() != blockName)
+			throw runtime_error("malformed end block");
+		assumeNotLast(token);
+		if ((++token)->get_type() != TokenType::Semicolon)
+			throw runtime_error("malformed end block");
 		++token;
 		return res;
 	}
-	return std::make_shared<SequentialCommand>(res, parse(token));
+	return std::make_shared<SequentialCommand>(res, parse(token,blockName));
 }

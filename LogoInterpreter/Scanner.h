@@ -32,11 +32,7 @@ class Scanner
 	}
 
 	bool isNumber(const std::string& s)
-	{
-		// std::string::const_iterator it = s.begin();
-		// while (it != s.end() && (std::isdigit(*it) || isDecimalSeparator(*it)))
-		// 	++it;
-		// return !s.empty() && it == s.end();
+	{		
 		auto result = double();
 		auto i = std::istringstream(s);
 

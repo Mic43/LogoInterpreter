@@ -85,6 +85,7 @@ int main(int argc, char* argv[])
 	catch (runtime_error& e)
 	{
 		cout << e.what();
+		return -1;
 	}
 	cout << "OK";
 	writeResult(visitor, out);

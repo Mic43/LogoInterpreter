@@ -34,7 +34,7 @@ class Parser
 	// 	++token;
 	// 	return t;
 	// }
-	std::shared_ptr<Command> parse(std::vector<Token>::iterator& token);
+	std::shared_ptr<Command> parse(std::vector<Token>::iterator& token, std::string blockName = "");
 public:
 
 
