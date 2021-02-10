@@ -1,0 +1,24 @@
+foo(x,n) 
+if (n > 0) przod(x); 
+lewo(45);
+foo(x*0.75,n-1);
+prawo(90);
+foo(x*0.75,n-1);
+lewo(45);
+tyl(x);
+end if;
+end foo;
+
+foo2(x,n) 
+if (n <> 0) przod(x); 
+lewo(45);
+foo(x*0.75,n-2);
+prawo(90);
+foo(x*0.75,n-3);
+lewo(45);
+tyl(x);
+end if;
+end foo2;
+
+foo(20,3);
+foo2(5,3);

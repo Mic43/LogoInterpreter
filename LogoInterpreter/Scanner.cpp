@@ -23,7 +23,7 @@ std::vector<Token> Scanner::tokenize()
 	{
 		char c = nextChar(it);
 
-		if (isalnum(c) || isDecimalSeparator(c))
+		if (isalnum(c) || isDecimalSeparator(c) || (isOperatorSymbol(c) &&  isOperatorSequence(stack)))
 		{
 			stack.push_back(c);
 		}
@@ -38,6 +38,10 @@ std::vector<Token> Scanner::tokenize()
 				else if (isIfKeyword(stack))
 				{
 					tokens.push_back(Token(stack, TokenType::IfKeyword));
+				}
+				else if(isOperatorSequence(stack))
+				{
+					tokens.push_back(Token(stack, TokenType::Operator));
 				}
 				else if (isNumber(stack))
 				{
@@ -58,7 +62,7 @@ std::vector<Token> Scanner::tokenize()
 				continue;			
 			if (isSemicolon(c))
 				tokens.push_back(Token(std::string(1,c), TokenType::Semicolon));
-			else if (isOperator(c))
+			else if (isOperatorSymbol(c))
 				tokens.push_back(Token(std::string(1, c), TokenType::Operator));
 			else if (isOpenPar(c))
 				tokens.push_back(Token(std::string(1, c), TokenType::OpenPar));

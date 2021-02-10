@@ -11,9 +11,19 @@ class Scanner
 	bool hasNext(const std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
 	char nextChar(std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
 
-	bool isOperator(char c)
+	bool isOperatorSymbol(char c)
 	{
 		return c == '+' || c == '-' || c == '*' || c == '=' || c == '>' || c == '<';
+	}
+
+	bool isOperatorSequence(const std::string& s)
+	{
+		if (s.empty())
+			return true;
+		std::string::const_iterator it = s.begin();
+		while (it != s.end() && isOperatorSymbol(*it))
+			++it;
+		return it == s.end();
 	}
 
 	bool isWhiteSpace(char c)
@@ -73,14 +83,14 @@ class Scanner
 		return c == '.';
 	}
 
+
 public:
 
-	
+
 	explicit Scanner(const std::string& input)
 		: input(input)
 	{
 	}
 
-	
 	std::vector<Token> tokenize();
 };
