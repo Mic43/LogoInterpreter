@@ -16,14 +16,17 @@ std::vector<Token> Scanner::tokenize()
 {
 	std::vector<Token> tokens;
 	std::string stack;
-	
+
+	input.push_back(' ');
 	auto it = input.begin();
 	while(hasNext(it))
 	{
 		char c = nextChar(it);
 
-		if (isalpha(c))
+		if (isalnum(c) || isDecimalSeparator(c))
+		{
 			stack.push_back(c);
+		}
 		else
 		{
 			if (!stack.empty())
@@ -54,15 +57,15 @@ std::vector<Token> Scanner::tokenize()
 			if (isWhiteSpace(c))			
 				continue;			
 			if (isSemicolon(c))
-				tokens.push_back(Token(std::to_string(c), TokenType::Semicolon));
+				tokens.push_back(Token(std::string(1,c), TokenType::Semicolon));
 			else if (isOperator(c))
-				tokens.push_back(Token(std::to_string(c), TokenType::Operator));
+				tokens.push_back(Token(std::string(1, c), TokenType::Operator));
 			else if (isOpenPar(c))
-				tokens.push_back(Token(std::to_string(c), TokenType::OpenPar));
+				tokens.push_back(Token(std::string(1, c), TokenType::OpenPar));
 			else if (isClosePar(c))
-				tokens.push_back(Token(std::to_string(c), TokenType::ClosePar));
+				tokens.push_back(Token(std::string(1, c), TokenType::ClosePar));
 			else if (isComma(c))
-				tokens.push_back(Token(std::to_string(c), TokenType::Comma));
+				tokens.push_back(Token(std::string(1, c), TokenType::Comma));
 			else
 				throw std::runtime_error("symbol not recognized: " + c);
 		}				

@@ -96,7 +96,7 @@ void main()
 	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
    //tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
 
-	string input = "";		
+	string input = " przod(3)";		
 	CommandsVisitor visitor;
 	try
 	{

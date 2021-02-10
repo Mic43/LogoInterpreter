@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <sstream>
 #include <string>
 #include <vector>
 #include "Token.h"
@@ -32,16 +33,21 @@ class Scanner
 
 	bool isNumber(const std::string& s)
 	{
-		std::string::const_iterator it = s.begin();
-		while (it != s.end() && std::isdigit(*it))
-			++it;
-		return !s.empty() && it == s.end();
+		// std::string::const_iterator it = s.begin();
+		// while (it != s.end() && (std::isdigit(*it) || isDecimalSeparator(*it)))
+		// 	++it;
+		// return !s.empty() && it == s.end();
+		auto result = double();
+		auto i = std::istringstream(s);
+
+		i >> result;
+		return !i.fail() && i.eof();
 	}
 
 	bool isIdentifier(const std::string& s)
 	{
 		std::string::const_iterator it = s.begin();
-		while (it != s.end() && std::isalpha(*it))
+		while (it != s.end() && std::isalnum(*it))
 			++it;
 		return !s.empty() && !isdigit(s[0]) && it == s.end();
 	}
@@ -65,6 +71,12 @@ class Scanner
 	{
 		return c == ',';
 	}
+
+	int isDecimalSeparator(char c)
+	{
+		return c == '.';
+	}
+
 public:
 
 	
@@ -73,5 +85,6 @@ public:
 	{
 	}
 
+	
 	std::vector<Token> tokenize();
 };
