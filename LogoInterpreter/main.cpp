@@ -101,6 +101,9 @@ void main()
 	try
 	{
 		Scanner s(input);
+		auto tokens1 = s.tokenize();
+
+		
 		Parser p(tokens);
 		auto program = p.parse();
 		program->accept(visitor);

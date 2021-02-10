@@ -3,18 +3,9 @@
 #include <vector>
 #include "Token.h"
 
-
 class Scanner
 {
 	std::string input;
-	
-public:
-
-	
-	explicit Scanner(const std::string& input)
-		: input(input)
-	{
-	}
 
 	bool hasNext(const std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
 	char nextChar(std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
@@ -42,7 +33,7 @@ public:
 	bool isNumber(const std::string& s)
 	{
 		std::string::const_iterator it = s.begin();
-		while (it != s.end() && std::isdigit(*it)) 
+		while (it != s.end() && std::isdigit(*it))
 			++it;
 		return !s.empty() && it == s.end();
 	}
@@ -50,7 +41,7 @@ public:
 	bool isIdentifier(const std::string& s)
 	{
 		std::string::const_iterator it = s.begin();
-		while (it != s.end() && std::isalpha(*it)) 
+		while (it != s.end() && std::isalpha(*it))
 			++it;
 		return !s.empty() && !isdigit(s[0]) && it == s.end();
 	}
@@ -70,6 +61,17 @@ public:
 		return c == ')';
 	}
 
-	bool isComma(char c);
+	bool isComma(char c)
+	{
+		return c == ',';
+	}
+public:
+
+	
+	explicit Scanner(const std::string& input)
+		: input(input)
+	{
+	}
+
 	std::vector<Token> tokenize();
 };

@@ -12,11 +12,6 @@ char Scanner::nextChar(std::_String_iterator<std::_String_val<std::_Simple_types
 	return r;
 }
 
-bool Scanner::isComma(char c)
-{
-	return c == ',';
-}
-
 std::vector<Token> Scanner::tokenize()
 {
 	std::vector<Token> tokens;
