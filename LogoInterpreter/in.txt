@@ -1,0 +1,1 @@
+foo(x,n) if (n > 0) przod(x); lewo(45);foo(x*0.75,n-1);prawo(90);;foo(x*0.75,n-1);lewo(45);tyl(x);end;end;foo(20,3);

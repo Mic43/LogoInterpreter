@@ -1,4 +1,5 @@
 
+#include <fstream>
 #include <iostream>
 
 #include "Command.h"
@@ -10,97 +11,67 @@
 
 using namespace std;
 
-void main()
+void writeResult(CommandsVisitor visitor, string out)
 {
-	//vector<shared_ptr<Token>> tokens;
+	ofstream of(out);
+	
+	auto turtle_state = visitor.get_environment().get_turtle_state();
+	
+	for (int i = 0; i < turtle_state->get_board_size(); ++i)
+	{
+		for (int j = 0; j < turtle_state->get_board_size(); ++j)
+		{
+			of << (turtle_state->getState(j,i) ? "*" : " ");
+		}
+		of << endl;
+	}
+	of.close();
+}
 
-	//
-	//  tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
-	//  tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	//  tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	//  tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	//
-	// tokens.push_back(make_shared<Token>("przod", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-	// tokens.push_back(make_shared<Token>("przod", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-	// tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
-	//
-	// tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	// tokens.push_back(make_shared<Token>("3", TokenType::Number));
-	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
+string loadFromFile(char* path)
+{
+	ifstream is(path);
+	if (!is.is_open())
+	{
+		cout << "No file";
+		exit(-1);
+	}
+	std::stringstream strStream;
+	strStream << is.rdbuf();
+	std::string str = strStream.str();
+	is.close();
+	return str;
+}
 
-
-
-	// tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>(",", TokenType::Comma));
-	// tokens.push_back(make_shared<Token>("y", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	//
-	//
-	// tokens.push_back(make_shared<Token>("przod", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>("+", TokenType::Operator));
-	// tokens.push_back(make_shared<Token>("y", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-	//
-	//
-	// tokens.push_back(make_shared<Token>("if", TokenType::IfKeyword));
-	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>(">", TokenType::Operator));
-	// tokens.push_back(make_shared<Token>("0", TokenType::Number));
-	//
-	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	//
-	// tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>("-", TokenType::Operator));
-	// tokens.push_back(make_shared<Token>("1", TokenType::Number));
-	// tokens.push_back(make_shared<Token>(",", TokenType::Comma));
-	// tokens.push_back(make_shared<Token>("x", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-	//
-	// tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
-	// //
-	//
-	//
-	// tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
-	//
-	// tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	// tokens.push_back(make_shared<Token>("5", TokenType::Number));
-	// tokens.push_back(make_shared<Token>(",", TokenType::Comma));
-	// tokens.push_back(make_shared<Token>("3", TokenType::Number));
-	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-	// //
-	// tokens.push_back(make_shared<Token>("przod", TokenType::Identifier));
-	// tokens.push_back(make_shared<Token>("(", TokenType::OpenPar));
-	// tokens.push_back(make_shared<Token>("5", TokenType::Number));
-	// tokens.push_back(make_shared<Token>(")", TokenType::ClosePar));
-	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
-   //tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
-
-	string input = "foo(x,n) if (n > 0) przod(x); lewo(45);foo(x*0.75,n-1);prawo(90);;foo(x*0.75,n-1);lewo(45);tyl(x);end;end; foo(20,3);";
-
-	//string input = "przod(3);prawo(45);przod(10);lewo(135);przod(4);";
-
+int main(int argc, char* argv[])
+{
+	if (argc < 7)
+	{
+		cout << " Not enough params";
+		return -1;
+	}
+		
+	string input; // "foo(x,n) if (n > 0) przod(x); lewo(45);foo(x*0.75,n-1);prawo(90);;foo(x*0.75,n-1);lewo(45);tyl(x);end;end; foo(20,3);";
 	int boardSize = 100;
+	string out;
+
+	//vector<string> params(argc-1);
+	for (int i = 1; i < argc; ++i)
+	{
+		if (argv[i] == string("-i"))
+		{
+			input = loadFromFile(argv[++i]);
+		}
+		if (argv[i] == string("-o"))
+		{
+			out = argv[++i];
+		}
+		if (argv[i] == string("-s"))
+		{
+			boardSize = std::stoi(argv[++i]);
+		}		
+	}
+	
 	CommandsVisitor visitor(std::make_shared<TurtleState>(boardSize));
 	try
 	{
@@ -115,14 +86,6 @@ void main()
 	{
 		cout << e.what();
 	}
-	auto turtle_state = visitor.get_environment().get_turtle_state();
-	
-	for (int i = 0; i < turtle_state->get_board_size(); ++i)
-	{
-		for (int j = 0; j < turtle_state->get_board_size(); ++j)
-		{
-			cout << (turtle_state->getState(j,i) ? "*" : " ");
-		}
-		cout << endl;
-	}		
+	cout << "OK";
+	writeResult(visitor, out);
 }
