@@ -28,21 +28,21 @@ std::shared_ptr<Expression> Parser::parseOperator(const Token& oper,
 	return OperatorExpression::tryCreateFromToken(oper, op1Exp, op2Exp);
 }
 
-std::shared_ptr<Expression> Parser::parseExpression(std::vector<std::shared_ptr<Token>>::iterator& token,bool& endReached)
+std::shared_ptr<Expression> Parser::parseExpression(std::vector<Token>::iterator& token,bool& endReached)
 {
-	stack<std::shared_ptr<Token>> stack;
+	stack<Token> stack;
 
-	while (token != tokens.end() && (*token)->get_type() != TokenType::Comma && (*token)->get_type() != TokenType::ClosePar)
+	while (token != tokens.end() && token->get_type() != TokenType::Comma && token->get_type() != TokenType::ClosePar)
 	{
 		stack.push(*token);
 		++token;
 	}
 	assumeNotLast(token);
-	endReached = (*token)->get_type() == TokenType::ClosePar;
+	endReached = token->get_type() == TokenType::ClosePar;
 	++token;
 	if (stack.size() == 1)
 	{		
-		return parseValue(*stack.top());
+		return parseValue(stack.top());
 	}
 	if (stack.size() == 3)
 	{
@@ -50,15 +50,15 @@ std::shared_ptr<Expression> Parser::parseExpression(std::vector<std::shared_ptr<
 		auto oper = stack.top(); stack.pop();
 		auto operand1 = stack.top(); stack.pop();
 
-		return parseOperator(*oper, *operand1, *operand2);
+		return parseOperator(oper, operand1, operand2);
 	}
 	throw runtime_error("badly formed expression");
 }
 
-std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<shared_ptr<Token>>::iterator& token)
+std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<Token>::iterator& token)
 {
 	assumeNotLast(token);
-	if ((*token)->get_type() != TokenType::OpenPar)
+	if (token->get_type() != TokenType::OpenPar)
 		throw runtime_error("badly formed parameter list");
 	++token;
 	
@@ -71,7 +71,7 @@ std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<share
 	return res;
 }
 
-void Parser::assumeNotLast(std::vector<std::shared_ptr<Token>>::iterator& token)
+void Parser::assumeNotLast(std::vector<Token>::iterator& token)
 {
 	if (token == tokens.end())
 		throw std::runtime_error("unexpected end of file");
@@ -83,23 +83,23 @@ std::shared_ptr<Command> Parser::parse()
 	return parse(token);
 }
 
-shared_ptr<Command> Parser::parse(vector<shared_ptr<Token>>::iterator& token)
+shared_ptr<Command> Parser::parse(vector<Token>::iterator& token)
 {
 	//shared_ptr<Command> res = make_shared<EmptyCommand>();
 
 	shared_ptr<SingleCommand> res = make_shared<EmptyCommand>();
 	
-	switch ((*token)->get_type())
+	switch (token->get_type())
 	{		
 		case TokenType::Identifier:
 		{
 			
-			string name = (*token)->get_content();
+			string name = token->get_content();
 			vector<shared_ptr<Expression>> parameters = parseParameterList(++token);			
 			assumeNotLast(token);
 
 			// handle call
-			if ((*token)->get_type() == TokenType::Semicolon)
+			if (token->get_type() == TokenType::Semicolon)
 			{
 				++token;
 				auto tc = TurtleCommand::tryCreate(name, parameters);
@@ -134,7 +134,7 @@ shared_ptr<Command> Parser::parse(vector<shared_ptr<Token>>::iterator& token)
 			++token;
 
 			assumeNotLast(token);
-			if ((*token)->get_type() != TokenType::OpenPar)
+			if (token->get_type() != TokenType::OpenPar)
 				throw runtime_error("expected condition");
 
 			bool end;
@@ -161,7 +161,7 @@ shared_ptr<Command> Parser::parse(vector<shared_ptr<Token>>::iterator& token)
 	}
 	if(token == tokens.end())
 		return res;
-	if ((*token)->get_type() == TokenType::EndBlock)
+	if (token->get_type() == TokenType::EndBlock)
 	{
 		++token;
 		return res;

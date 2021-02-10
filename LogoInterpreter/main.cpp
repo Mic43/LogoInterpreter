@@ -12,7 +12,7 @@ using namespace std;
 
 void main()
 {
-	vector<shared_ptr<Token>> tokens;
+	//vector<shared_ptr<Token>> tokens;
 
 	//
 	//  tokens.push_back(make_shared<Token>("foo", TokenType::Identifier));
@@ -96,13 +96,12 @@ void main()
 	// tokens.push_back(make_shared<Token>(";", TokenType::Semicolon));
    //tokens.push_back(make_shared<Token>("end", TokenType::EndBlock));
 
-	string input = " przod(3)";		
+	string input = "foo(x,n) if (n > 0) przod(x); przod(45);foo(x*0.75,n-1);przod(90);;foo(x*0.75,n-1);przod(45);przod(x);end;end; foo(20,3);";
 	CommandsVisitor visitor;
 	try
 	{
 		Scanner s(input);
-		auto tokens1 = s.tokenize();
-
+		auto tokens = s.tokenize();
 		
 		Parser p(tokens);
 		auto program = p.parse();
