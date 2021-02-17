@@ -7,7 +7,7 @@
 #include "Scanner.h"
 #include "Token.h"
 #include "Visitor.h"
-
+#include <string>
 
 using namespace std;
 
@@ -77,9 +77,14 @@ int main(int argc, char* argv[])
 	{
 		Scanner s(input);
 		auto tokens = s.tokenize();
-		
+
+		cout << "Tokenization successful!" <<endl;
 		Parser p(tokens);
 		auto program = p.parse();
+		cout << "Parsing successful! "<<endl;
+
+		cout << "Running program: " << endl;
+		cout << program->toString() << endl;		
 		program->accept(visitor);
 	}
 	catch (runtime_error& e)

@@ -4,28 +4,36 @@
 #include <utility>
 #include <vector>
 
+
+#include "CommandsEnvironment.h"
 #include "Expression.h"
 #include "TurtleState.h"
+#include <string>
+
 //#include "Visitor.h"
 
 class Procedure;
 class CommandsVisitorBase;
 
 class Command
-{
+{	
+
 public:
+	
 	virtual void accept(CommandsVisitorBase&) const = 0;
+	virtual std::string toString(int level = 0) const;
 };
 class SingleCommand : public Command
 {
-
+public:
+	
 };
 
 class EmptyCommand : public SingleCommand
 {
+public:
 	// Inherited via SingleCommand
 	virtual void accept(CommandsVisitorBase&) const override;
-	
 };
 
 class SequentialCommand : public Command
@@ -46,14 +54,13 @@ public:
 	{
 		return *nextCommand;
 	}
-
+	// Inherited via Command
+	void accept(CommandsVisitorBase&) const  override;
+	std::string toString(int level) const override;
 private:
 	std::shared_ptr<SingleCommand> command;
 	std::shared_ptr<Command> nextCommand;
 	
-	// Inherited via Command
-	virtual void accept(CommandsVisitorBase&) const  override;
-
 };
 
 class CallCommand : public SingleCommand
@@ -77,10 +84,13 @@ public:
 	{
 	}
 
+	 std::string toString(int level) const override;
+
 private:
 	std::vector<std::shared_ptr<Expression>> parameters;
 	std::string targetName;
 };
+
 
 class DeclareProcedureCommand : public SingleCommand
 {
@@ -98,11 +108,10 @@ public:
 		
 	}
 
-
 	void accept(CommandsVisitorBase&)  const override;
-
-
+	std::string toString(int level) const override;
 };
+
 
  class TurtleCommand: public SingleCommand
  {
@@ -147,9 +156,7 @@ public:
  };
 
 class IfCommand : public SingleCommand
-{
-public:
-	
+{	
 
 private:
 	std::shared_ptr<Expression> condition_;
@@ -171,7 +178,8 @@ public:
 		: condition_(std::move(condition)),
 		  body_(std::move(body))
 	{
-	}
-
+	}	
 	void accept(CommandsVisitorBase&)  const override;
+	std::string toString(int level) const override;
 };
+

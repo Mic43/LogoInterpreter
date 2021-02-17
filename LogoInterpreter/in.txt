@@ -1,3 +1,36 @@
-if (7 <> 5) 
-przod(5); 
-end if;
+
+tree (size)
+	if (size < 5) 
+		przod (size);
+		tyl (size);
+	end if;
+	if (size <> 5) 
+		przod (0.33*size);
+		lewo(30);
+		tree (size*0.66) ;
+		prawo (30);
+		przod (size/6);
+		prawo (25) ;
+		tree (size/2) ;
+		lewo (25);
+		przod (size/3);
+		prawo (25);
+		tree (size/2) ;
+		lewo (25);
+		przod (size/6);
+		tyl (size);
+	end if;
+end tree;
+
+foo(x,n) 
+	if (n > 0) przod(x); 
+		lewo(45);
+		foo(x*0.75,n-1);
+		prawo(90);
+		foo(x*0.75,n-1);
+		lewo(45);
+		tyl(x);
+	end if;
+end foo;
+
+foo(20,5);

@@ -57,10 +57,9 @@ std::vector<Token> Scanner::tokenize()
 				}
 				stack.clear();
 			}
-			
-			if (isWhiteSpace(c))			
-				continue;			
-			if (isSemicolon(c))
+			if(isEndLine(c))
+				tokens.push_back(Token(std::string(1, c), TokenType::EndLine));
+			else if (isSemicolon(c))
 				tokens.push_back(Token(std::string(1,c), TokenType::Semicolon));
 			else if (isOperatorSymbol(c))
 				tokens.push_back(Token(std::string(1, c), TokenType::Operator));
@@ -70,6 +69,8 @@ std::vector<Token> Scanner::tokenize()
 				tokens.push_back(Token(std::string(1, c), TokenType::ClosePar));
 			else if (isComma(c))
 				tokens.push_back(Token(std::string(1, c), TokenType::Comma));
+			else if (isWhiteSpace(c))
+				continue;
 			else
 				throw std::runtime_error("symbol not recognized: " + c);
 		}				

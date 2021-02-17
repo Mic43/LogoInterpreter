@@ -5,9 +5,8 @@
 #include <vector>
 #include <stdexcept>
 
-#include "Command.h"
 #include "TurtleState.h"
-
+class Command;
 
 class Procedure
 {

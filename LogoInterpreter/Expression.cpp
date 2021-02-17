@@ -3,6 +3,8 @@
 #include "Token.h"
 #include <stdexcept>
 
+#include "BinaryOperatorsTable.h"
+
 std::shared_ptr<OperatorExpression> OperatorExpression::tryCreateFromToken(
 	const Token& token,
 	const std::shared_ptr<Expression>& oper1, 
@@ -10,23 +12,18 @@ std::shared_ptr<OperatorExpression> OperatorExpression::tryCreateFromToken(
 {
 	if (token.get_type() == TokenType::Operator)
 	{
-		if (token.get_content() == "+")
-			return std::make_shared<OperatorAdd>(oper1, oper2);
-		if (token.get_content() == "-")
-			return std::make_shared<OperatorSub>(oper1, oper2);
-		if (token.get_content() == "*")
-			return std::make_shared<OperatorMul>(oper1, oper2);		
-		if (token.get_content() == "=")
-			return std::make_shared<OperatorEqual>(oper1, oper2);
-		if (token.get_content() == ">")
-			return std::make_shared<OperatorGreater>(oper1, oper2);
-		if (token.get_content() == "<")
-			return std::make_shared<OperatorLess>(oper1, oper2);
-		if (token.get_content() == "<>")
-			return std::make_shared<OperatorNotEqual>(oper1, oper2);
-		throw std::runtime_error("invalid operator");
+		auto operExp = 
+			BinaryOperatorsTable::tryCreateOperatorExpression(token.get_content(),oper1, oper2);
+		if(operExp == nullptr)
+			throw std::runtime_error("invalid operator");
+		return operExp;
 	}
 	throw std::runtime_error("invalid expression");
+}
+
+double OperatorDiv::evaluate(const CommandsEnvironment& e) const
+{
+	return leftOperand->evaluate(e) / rightOperand->evaluate(e);
 }
 
 double OperatorAdd::evaluate(const CommandsEnvironment& e) const
@@ -49,6 +46,11 @@ double OperatorSub::evaluate(const CommandsEnvironment& e)const
 double OperatorGreater::evaluate(const CommandsEnvironment& e)const
 {
 	return leftOperand->evaluate(e) > rightOperand->evaluate(e);
+}
+
+double OperatorGreaterEqual::evaluate(const CommandsEnvironment& e) const
+{
+	return leftOperand->evaluate(e) >= rightOperand->evaluate(e);
 }
 
 double OperatorLess::evaluate(const CommandsEnvironment& e)const

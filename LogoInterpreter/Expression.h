@@ -33,6 +33,18 @@ public:
 		const std::shared_ptr<Expression>& oper1, const std::shared_ptr<Expression>& oper2);
 };
 
+class OperatorDiv : public OperatorExpression
+{
+public:
+
+	OperatorDiv(std::shared_ptr<Expression> left_operand, std::shared_ptr<Expression> right_operand)
+		: OperatorExpression(std::move(left_operand), std::move(right_operand))
+	{
+	}
+
+	double evaluate(const CommandsEnvironment&) const override;
+};
+
 class OperatorAdd : public OperatorExpression
 {
 public:
@@ -84,6 +96,18 @@ public:
 	double evaluate(const CommandsEnvironment& e) const override;
 };
 
+class OperatorGreaterEqual : public OperatorExpression
+{
+public:
+
+
+	OperatorGreaterEqual(std::shared_ptr<Expression> left_operand, std::shared_ptr<Expression> right_operand)
+		: OperatorExpression(std::move(left_operand), std::move(right_operand))
+	{
+	}
+
+	double evaluate(const CommandsEnvironment& e) const override;
+};
 class OperatorLess : public OperatorExpression
 {
 public:

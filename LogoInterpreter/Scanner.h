@@ -2,6 +2,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include "BinaryOperatorsTable.h"
 #include "Token.h"
 
 class Scanner
@@ -13,7 +15,8 @@ class Scanner
 
 	bool isOperatorSymbol(char c)
 	{
-		return c == '+' || c == '-' || c == '*' || c == '=' || c == '>' || c == '<';
+		return BinaryOperatorsTable::isOperatorSymbol(c);
+		//return c == '+' || c == '-' || c == '*' || c == '=' || c == '>' || c == '<' || c== '/';
 	}
 
 	bool isOperatorSequence(const std::string& s)
@@ -83,6 +86,10 @@ class Scanner
 		return c == '.';
 	}
 
+	bool isEndLine(char c)
+	{
+		return c == '\n';
+	}
 
 public:
 
@@ -92,5 +99,6 @@ public:
 	{
 	}
 
+	
 	std::vector<Token> tokenize();
 };

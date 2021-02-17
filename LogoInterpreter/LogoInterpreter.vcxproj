@@ -142,6 +142,7 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="CommandsEnvironment.h" />
+    <ClInclude Include="BinaryOperatorsTable.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Scanner.h" />
     <ClInclude Include="Token.h" />
@@ -153,11 +154,15 @@
     <ClCompile Include="CommandsEnvironment.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="BinaryOperatorsTable.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Scanner.cpp" />
     <ClCompile Include="Token.cpp" />
     <ClCompile Include="TurtleState.cpp" />
     <ClCompile Include="Visitor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="in.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

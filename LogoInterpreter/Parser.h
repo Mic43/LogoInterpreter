@@ -20,7 +20,22 @@ class Parser
 	std::shared_ptr<Expression> parseExpression(std::vector<Token>::iterator& token, bool& endReached);
 	std::vector<std::shared_ptr<Expression>> parseParameterList(std::vector<Token>::iterator& token);
 
-	void assumeNotLast(std::vector<Token>::iterator& token);
+	void assumeNotEnd(std::vector<Token>::iterator& token);
+
+	bool isEnd(std::vector<Token>::iterator& token)
+	{
+		return token == tokens.end();
+	}
+	bool hasNext(std::vector<Token>::iterator& tokenIt)
+	{
+		return (tokenIt + 1) != tokens.end();
+	}
+	//
+	// const  moveNext(std::vector<Token>::iterator& tokenIt)
+	// {
+	// 	auto token = tokenIt++;
+	// 	return *token;
+	// }
 
 	// std::shared_ptr<Token> advanceNext( std::vector<std::shared_ptr<Token>>::iterator& token)
 	// {
