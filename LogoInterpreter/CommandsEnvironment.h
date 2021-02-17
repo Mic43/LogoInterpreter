@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -65,10 +66,10 @@ public:
 		return functions;
 	}
 
-	const Procedure& getProcedure(const std::string& name) const;
+	std::optional<std::reference_wrapper<Procedure>> getProcedure(const std::string& name) const;
 	bool tryAddNewProcedure(std::shared_ptr<Procedure> newFunction);
-	double getVariableValue(const std::string& name) const;
-
+	std::optional<double> getVariableValue(const std::string& name) const;
+		
 	static CommandsEnvironment createNestedEnvironment(
 		const CommandsEnvironment& base, 
 		const std::map<std::string, double>& newVariables);

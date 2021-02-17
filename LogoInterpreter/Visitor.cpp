@@ -14,6 +14,12 @@ void CommandsVisitor::onVisit(const IfCommand& command)
 		command.get_body().accept(*this);
 }
 
+
+void CommandsVisitor::throwExecutionError(const std::string& message,const Command& command) const
+{
+	throw runtime_error(message + ", line: " + std::to_string(command.get_line_number()));
+}
+
 void CommandsVisitor::onVisit(const EmptyCommand& e)
 {
 	// Do nothing
@@ -26,14 +32,17 @@ void CommandsVisitor::onVisit(const SequentialCommand& command)
 }
 
 void CommandsVisitor::onVisit(const CallCommand& call_command)
-{
-	const Procedure& procedure = environment.getProcedure(call_command.get_target_name());
+{	
+	auto proc = environment.getProcedure(call_command.get_target_name());
+	if (!proc.has_value())
+		throwExecutionError("Command not defined: " + call_command.get_target_name(),call_command);
+	auto procedure = proc.value().get();
 	
 	const std::vector<std::shared_ptr<Expression>>& parameters = call_command.get_parameters();
 	
-	if (procedure.get_parameters().size() != parameters.size())
-		throw runtime_error("Procedure " + call_command.get_target_name()
-			+ " does not have " + std::to_string(parameters.size()) + " parameter(s)");
+	if (proc.value().get().get_parameters().size() != parameters.size())
+		throwExecutionError("Procedure " + call_command.get_target_name()
+			+ " does not have " + std::to_string(parameters.size()) + " parameter(s)",call_command);
 	
 	map<string, double> nestedVariables;
 		
@@ -54,8 +63,8 @@ void CommandsVisitor::onVisit(const CallCommand& call_command)
 void CommandsVisitor::onVisit(const DeclareProcedureCommand& declare_function_command)
 {
 	if (!environment.tryAddNewProcedure(declare_function_command.get_target()))
-		throw std::runtime_error( "Multiple procedure declaration: " 
-			+ declare_function_command.get_target()->get_name());
+		throwExecutionError( "Multiple procedure declaration: "
+			+ declare_function_command.get_target()->get_name(),declare_function_command);
 }
 
 CommandsVisitor CommandsVisitor::createNestedVisitor(const CommandsEnvironment& nestedEnvironment)

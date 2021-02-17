@@ -16,22 +16,42 @@ class Procedure;
 class CommandsVisitorBase;
 
 class Command
-{	
-
+{
 public:
-	
+	int get_line_number() const
+	{
+		return lineNumber;
+	}
+
+private:
+	int lineNumber;
+public:
+
+	explicit Command(int line_number)
+		: lineNumber(line_number)
+	{
+	}
+
 	virtual void accept(CommandsVisitorBase&) const = 0;
 	virtual std::string toString(int level = 0) const;
 };
 class SingleCommand : public Command
 {
 public:
-	
+	explicit SingleCommand(int line_number)
+		: Command(line_number)
+	{
+	}
 };
 
 class EmptyCommand : public SingleCommand
 {
 public:
+	explicit EmptyCommand(int line_number)
+		: SingleCommand(line_number)
+	{
+	}
+
 	// Inherited via SingleCommand
 	virtual void accept(CommandsVisitorBase&) const override;
 };
@@ -39,8 +59,8 @@ public:
 class SequentialCommand : public Command
 {
 public:
-	SequentialCommand(std::shared_ptr<SingleCommand> command, std::shared_ptr<Command> next_command)
-		: command(command),
+	SequentialCommand(std::shared_ptr<SingleCommand> command, std::shared_ptr<Command> next_command, int line_number)
+		: Command(line_number), command(command),
 		  nextCommand(next_command)
 	{
 	}
@@ -78,11 +98,11 @@ public:
 
 	void accept(CommandsVisitorBase&) const override;
 
-	CallCommand(std::vector<std::shared_ptr<Expression>> parameters, const std::string& target_name)
-		: parameters(std::move(parameters)),
-		  targetName(target_name)
-	{
-	}
+	CallCommand(std::vector<std::shared_ptr<Expression>> parameters, const std::string& target_name, int line_number)
+		 : SingleCommand(line_number), parameters(std::move(parameters)),
+		   targetName(target_name)
+	 {
+	 }
 
 	 std::string toString(int level) const override;
 
@@ -103,9 +123,9 @@ public:
 private:	
 	std::shared_ptr<Procedure> target;
 public:
-	explicit DeclareProcedureCommand(std::shared_ptr<Procedure> target):
-		target(std::move(target)) {
-		
+	explicit DeclareProcedureCommand(std::shared_ptr<Procedure> target, int line_number): SingleCommand(line_number),
+	                                                                     target(std::move(target))
+	{
 	}
 
 	void accept(CommandsVisitorBase&)  const override;
@@ -122,11 +142,11 @@ public:
 	 std::shared_ptr<Expression> parameter;
  public: 
 	
-    TurtleCommand(std::shared_ptr<Expression> parameter, Type type)
-	    : parameter(std::move(parameter)),
-		type(type)
-    {
-    }
+    TurtleCommand(std::shared_ptr<Expression> parameter, Type type, int line_number)
+		 : SingleCommand(line_number), parameter(std::move(parameter)),
+		   type(type)
+	 {
+	 }
 
     Expression& get_parameter() const
     {
@@ -141,16 +161,16 @@ public:
  	void accept(CommandsVisitorBase& v)  const override;
 	static std::shared_ptr<TurtleCommand> tryCreate(
 		const std::string& identifier, 
-		const std::vector<std::shared_ptr<Expression>> &parameter)
+		const std::vector<std::shared_ptr<Expression>> &parameter, int line_number)
 	{
 		 if( identifier == "przod")
-		 	return std::make_shared<TurtleCommand>(parameter.front(),Type::Forward);
+		 	return std::make_shared<TurtleCommand>(parameter.front(),Type::Forward, line_number);
 		 if (identifier == "tyl")
-			 return std::make_shared<TurtleCommand>(parameter.front(), Type::Backward);
+			 return std::make_shared<TurtleCommand>(parameter.front(), Type::Backward,  line_number);
 		 if (identifier == "lewo")
-			 return std::make_shared<TurtleCommand>(parameter.front(), Type::Left);
+			 return std::make_shared<TurtleCommand>(parameter.front(), Type::Left,  line_number);
 		 if (identifier == "prawo")
-			 return std::make_shared<TurtleCommand>(parameter.front(), Type::Right);
+			 return std::make_shared<TurtleCommand>(parameter.front(), Type::Right, line_number);
 		 return std::unique_ptr<TurtleCommand>{};
 	}
  };
@@ -174,11 +194,12 @@ public:
 		return *body_;
 	}
 
-	IfCommand(std::shared_ptr<Expression> condition, std::shared_ptr<Command> body)
-		: condition_(std::move(condition)),
+	IfCommand(std::shared_ptr<Expression> condition, std::shared_ptr<Command> body, int line_number)
+		: SingleCommand(line_number), condition_(std::move(condition)),
 		  body_(std::move(body))
 	{
-	}	
+	}
+
 	void accept(CommandsVisitorBase&)  const override;
 	std::string toString(int level) const override;
 };

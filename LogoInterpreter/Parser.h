@@ -12,6 +12,7 @@ class Token;
 
 class Parser
 {
+	int currentLineNumber;
 	std::vector<Token> tokens;
 	std::shared_ptr<Expression> parseValue(const Token& token) const;
 	std::shared_ptr<Expression> parseOperator(
@@ -48,15 +49,16 @@ class Parser
 	// 	auto t = *token;
 	// 	++token;
 	// 	return t;
-	// }
-	std::shared_ptr<Command> parse(std::vector<Token>::iterator& token, std::string blockName = "");
+	// }	
+	void throwParsingError(const std::string& message) const;
+	std::shared_ptr<Command> parse(std::vector<Token>::iterator& token, std::string blockName);
 public:
 
 
 	explicit Parser(std::vector<Token>& tokens)
-		: tokens(tokens)
+		: currentLineNumber(0), tokens(tokens)
 	{
 	}
 
-	std::shared_ptr<Command> parse();	
+	std::shared_ptr<Command> parse();
 };

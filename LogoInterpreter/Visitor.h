@@ -21,6 +21,7 @@ class CommandsVisitor : public CommandsVisitorBase
 {
 private:
 	CommandsEnvironment environment;
+	void throwExecutionError(const std::string& message, const Command& command) const;
 
 public:
 

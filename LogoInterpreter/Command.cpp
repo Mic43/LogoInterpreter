@@ -14,7 +14,7 @@ std::string Command::toString(int level) const
 	{
 		margin += "\t";
 	}
-	return margin + typeid(*this).name();
+	return margin + typeid(*this).name();//  +"| line: ";  +std::to_string(lineNumber);
 }
 
  std::string SequentialCommand::toString(int level) const
@@ -29,7 +29,8 @@ std::string Command::toString(int level) const
 
  std::string DeclareProcedureCommand::toString(int level) const
 {
-	return Command::toString(level) + "\n" + target->get_body().toString(level + 1);
+	return Command::toString(level) +": " + this->get_target()->get_name() + "\n"
+	+ target->get_body().toString(level + 1);
 }
 
  std::string IfCommand::toString(int level) const
