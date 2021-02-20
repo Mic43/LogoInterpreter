@@ -76,7 +76,7 @@ double ConstantExpresion::evaluate(const CommandsEnvironment&)const
 
 double VarExpression::evaluate(const CommandsEnvironment& environment)const
 {
-	auto var = environment.getVariableValue(name);
+	auto var = environment.tryGetVariableValue(name);
 	if (!var.has_value())
 		throw std::runtime_error("variable not defined: " + name);
 	return var.value();

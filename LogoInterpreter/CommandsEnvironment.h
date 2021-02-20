@@ -66,10 +66,10 @@ public:
 		return functions;
 	}
 
-	std::optional<std::reference_wrapper<Procedure>> getProcedure(const std::string& name) const;
+	std::optional<std::reference_wrapper<Procedure>> tryGetProcedure(const std::string& name) const;
 	bool tryAddNewProcedure(std::shared_ptr<Procedure> newFunction);
-	std::optional<double> getVariableValue(const std::string& name) const;
-		
+	std::optional<double> tryGetVariableValue(const std::string& name) const;
+	void addNewVariable(const std::string& name, double value);
 	static CommandsEnvironment createNestedEnvironment(
 		const CommandsEnvironment& base, 
 		const std::map<std::string, double>& newVariables);

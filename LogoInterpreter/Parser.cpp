@@ -6,6 +6,8 @@
 #include "CommandsEnvironment.h"
 #include <string>
 
+#include "BinaryOperatorsTable.h"
+
 using namespace std;
 
 std::shared_ptr<Expression> Parser::parseValue(const Token& token) const
@@ -34,14 +36,17 @@ std::shared_ptr<Expression> Parser::parseExpression(std::vector<Token>::iterator
 {
 	stack<Token> stack;
 
-	while (token != tokens.end() && token->get_type() != TokenType::Comma && token->get_type() != TokenType::ClosePar)
+	while (token != tokens.end() 
+		&& (token->get_type() == TokenType::Identifier 
+		|| token->get_type() == TokenType::Number 
+		|| token->get_type() == TokenType::Operator))
 	{
 		stack.push(*token);
-		++token;
+		moveToNextSignificant(token);
 	}
 	assumeNotEnd(token);
-	endReached = token->get_type() == TokenType::ClosePar;
-	++token;
+	endReached = token->get_type() != TokenType::Comma;
+	moveToNextSignificant(token);
 	if (stack.size() == 1)
 	{
 		return parseValue(stack.top());
@@ -92,6 +97,30 @@ void Parser::throwParsingError(const string& message) const
 	throw runtime_error(message + ", line: " + std::to_string(currentLineNumber));
 }
 
+void Parser::assumeNextIs(std::vector<Token>::iterator& token, TokenType tokenType)
+{
+	moveToNextSignificant(token);
+	assumeNotEnd(token);
+	if (token->get_type() != tokenType)
+		throwParsingError("unexpected token type");
+}
+
+void Parser::moveToNextSignificant(std::vector<Token>::iterator& token)
+{
+	do 
+	{
+		++token;
+		if (isEnd(token) || token->get_type() != TokenType::EndLine)
+			break;
+		
+		if(token->get_type() == TokenType::EndLine)
+		{
+			currentLineNumber++;
+		}
+		
+	} while (true);
+}
+
 shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockName)
 {
 	if (isEnd(token))
@@ -104,7 +133,6 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockNa
 	{
 	case TokenType::Identifier:
 	{
-
 		string name = token->get_content();
 		vector<shared_ptr<Expression>> parameters = parseParameterList(++token);
 		assumeNotEnd(token);
@@ -142,6 +170,37 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockNa
 			curLineNumberTemp);
 		break;
 	}
+	case TokenType::LetKeyword:
+	{
+		assumeNextIs(token,TokenType::Identifier);
+		string varName = token->get_content();
+		assumeNextIs(token, TokenType::Operator);
+		moveToNextSignificant(token);
+		bool end;
+		auto exprssion = parseExpression(token, end);
+		if (!end)
+			throwParsingError("malformed expression");
+		currentCommand =  std::make_shared<AssignCommand>(varName, exprssion, currentLineNumber);
+		//assumeNextIs(token,TokenType::Semicolon);
+		break;
+	}		
+	case TokenType::RepeatKeyword:
+	{
+		++token;
+		int curLineNumberTemp = currentLineNumber;
+		assumeNotEnd(token);
+		if (token->get_type() != TokenType::OpenPar)
+			throwParsingError("expected expression");
+
+		bool end;
+		auto expression = parseExpression(++token, end);
+		if (!end)
+			throwParsingError("malformed expression");
+
+		auto body = parse(token, "repeat");
+		currentCommand = make_shared<RepeatCommand>(expression, body, curLineNumberTemp);
+		break;
+	}
 	case TokenType::IfKeyword:
 	{
 		++token;
@@ -160,14 +219,21 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockNa
 		currentCommand = make_shared<IfCommand>(expression, body, curLineNumberTemp);
 		break;
 	}
+	case TokenType::LineComment:
+		while (!isEnd(token) && token->get_type() != TokenType::EndLine)
+		{			
+			++token;
+		}
+		return parse(token, blockName);
 	case TokenType::Semicolon:
 		currentCommand = std::make_shared<EmptyCommand>(currentLineNumber);
 		++token;
 		break;
 	case TokenType::EndLine:
 		currentLineNumber++;
-		return parse(++token, blockName);// = std::make_shared<EmptyCommand>();		 			
-	case TokenType::EndBlock:
+		return parse(++token, blockName);
+		// = std::make_shared<EmptyCommand>();		 			
+	case TokenType::EndBlockKeyword:
 		if ((++token)->get_content() != blockName)			
 			throwParsingError("malformed end block");
 
@@ -182,6 +248,7 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockNa
 	case TokenType::Comma:
 	case TokenType::Operator:
 		throwParsingError("Symbol not expected");
+		break;
 	default:
 		throwParsingError("Not recognized token type");		
 	}

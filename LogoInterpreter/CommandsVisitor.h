@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include "Command.h"
+#include "Commands.h"
 #include "CommandsEnvironment.h"
 
 class CommandsVisitorBase
@@ -14,6 +14,8 @@ public:
 	virtual void onVisit(const DeclareProcedureCommand& call_command) = 0;
 	virtual void onVisit(const TurtleCommand& turtle_command) = 0;
 	virtual void onVisit(const IfCommand& if_command) = 0;
+	virtual void onVisit(const RepeatCommand& repeat_command) = 0;
+	virtual void onVisit(const AssignCommand& assign_command) = 0;
 };
 
 
@@ -47,6 +49,8 @@ public:
 	void onVisit(const DeclareProcedureCommand& call_command) override;
 	void onVisit(const TurtleCommand& turtle_command) override;
 	void onVisit(const IfCommand& if_command) override;
+	void onVisit(const RepeatCommand& repeat_command) override;
+	void onVisit(const AssignCommand& assign_command) override;
 
 	static CommandsVisitor createNestedVisitor(const CommandsEnvironment& nestedEnvironment);
 };

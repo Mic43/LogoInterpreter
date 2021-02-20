@@ -35,6 +35,7 @@ public:
 	virtual void accept(CommandsVisitorBase&) const = 0;
 	virtual std::string toString(int level = 0) const;
 };
+
 class SingleCommand : public Command
 {
 public:
@@ -111,7 +112,6 @@ private:
 	std::string targetName;
 };
 
-
 class DeclareProcedureCommand : public SingleCommand
 {
 public:
@@ -131,7 +131,6 @@ public:
 	void accept(CommandsVisitorBase&)  const override;
 	std::string toString(int level) const override;
 };
-
 
  class TurtleCommand: public SingleCommand
  {
@@ -204,3 +203,61 @@ public:
 	std::string toString(int level) const override;
 };
 
+class RepeatCommand : public SingleCommand
+{
+
+private:
+	std::shared_ptr<Expression> count;
+	std::shared_ptr<Command> body_;
+public:
+
+
+	const Expression& get_count() const
+	{
+		return *count;
+	}
+
+	const Command& get_body() const
+	{
+		return *body_;
+	}
+
+	RepeatCommand(std::shared_ptr<Expression> count, std::shared_ptr<Command> body, int line_number)
+		: SingleCommand(line_number), count(std::move(count)),
+		body_(std::move(body))
+	{
+	}
+
+	void accept(CommandsVisitorBase&)  const override;
+	std::string toString(int level) const override;
+};
+
+class AssignCommand : public SingleCommand
+{
+public:
+	 std::string get_variable_name() const
+	{
+		return variableName;
+	}
+
+	 std::shared_ptr<Expression> get_initialization_expression() const
+	{
+		return initializationExpression;
+	}
+
+private:
+	std::string variableName;
+	std::shared_ptr<Expression> initializationExpression;
+public:
+
+
+	AssignCommand( std::string variable_name, std::shared_ptr<Expression> initialization_expression, int line_number)
+		: SingleCommand(line_number),
+		  variableName(std::move(variable_name)),
+		  initializationExpression(std::move(initialization_expression))
+	{
+	}
+
+	void accept(CommandsVisitorBase&)  const override;
+	std::string toString(int level) const override;
+};

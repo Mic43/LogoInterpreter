@@ -1,6 +1,6 @@
-#include "Command.h"
+#include "Commands.h"
 #include <iostream>
-#include "Visitor.h"
+#include "CommandsVisitor.h"
 #include <string>
 #include <algorithm>
 #include <numeric>
@@ -39,12 +39,33 @@ std::string Command::toString(int level) const
 }
 
 
-void SequentialCommand::accept(CommandsVisitorBase& v)const
+std::string RepeatCommand::toString(int level) const
+{
+	return Command::toString(level) + "\n" + body_->toString(level + 1);
+
+}
+
+std::string AssignCommand::toString(int level) const
+{
+	return Command::toString(level) + ": " + this->get_variable_name();
+
+}
+
+void AssignCommand::accept(CommandsVisitorBase& v) const
+{
+	v.onVisit(*this);
+}
+
+void RepeatCommand::accept(CommandsVisitorBase& v) const
 {
 	v.onVisit(*this);
 }
 
 
+void SequentialCommand::accept(CommandsVisitorBase& v)const
+{
+	v.onVisit(*this);
+}
 
 
 void EmptyCommand::accept(CommandsVisitorBase& v) const

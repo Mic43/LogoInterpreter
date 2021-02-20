@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <optional>
 
-std::optional< std::reference_wrapper<Procedure>> CommandsEnvironment::getProcedure(const std::string& name) const
+std::optional< std::reference_wrapper<Procedure>> CommandsEnvironment::tryGetProcedure(const std::string& name) const
 {	
 	auto res = functions.find(name);
 	if (res == functions.end())
@@ -17,7 +17,7 @@ std::optional< std::reference_wrapper<Procedure>> CommandsEnvironment::getProced
 	return true;
 }
 
-std::optional<double> CommandsEnvironment::getVariableValue(const std::string& name) const
+std::optional<double> CommandsEnvironment::tryGetVariableValue(const std::string& name) const
 {
 	auto res = variables.find(name);
 	if (res == variables.end())
@@ -26,8 +26,16 @@ std::optional<double> CommandsEnvironment::getVariableValue(const std::string& n
 	return std::make_optional (res->second);
 }
 
+void CommandsEnvironment::addNewVariable(const std::string& name, double value)
+{
+	auto res = variables.find(name);
+	if (res != variables.end())
+		throw std::runtime_error("Variable already defined: " + name);
+	variables[name] = value;
+}
+
 CommandsEnvironment CommandsEnvironment::createNestedEnvironment(const CommandsEnvironment& base,
-	const std::map<std::string, double>& newVariables)
+                                                                 const std::map<std::string, double>& newVariables)
 {
 	//TODO: possible errors here
 	CommandsEnvironment ce(base.turtle_state);

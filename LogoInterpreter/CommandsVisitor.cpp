@@ -1,5 +1,5 @@
-#include "Visitor.h"
-#include "Command.h"
+#include "CommandsVisitor.h"
+#include "Commands.h"
 #include <iostream>
 #include <stdexcept>
 #include "CommandsEnvironment.h"
@@ -8,16 +8,32 @@
 using namespace std;
 
 
+void CommandsVisitor::throwExecutionError(const std::string& message,const Command& command) const
+{
+	throw runtime_error(message + ", line: " + std::to_string(command.get_line_number()));
+}
+
 void CommandsVisitor::onVisit(const IfCommand& command)
 {
 	if (command.get_condition().evaluate(environment))
 		command.get_body().accept(*this);
 }
 
-
-void CommandsVisitor::throwExecutionError(const std::string& message,const Command& command) const
+void CommandsVisitor::onVisit(const RepeatCommand& repeat_command)
 {
-	throw runtime_error(message + ", line: " + std::to_string(command.get_line_number()));
+	int count = repeat_command.get_count().evaluate(environment);
+	for (int i = 0; i < count; ++i)
+	{
+		repeat_command.get_body().accept(*this);
+	}
+}
+
+void CommandsVisitor::onVisit(const AssignCommand& assign_command)
+{
+	if (environment.tryGetVariableValue(assign_command.get_variable_name()).has_value())
+		throwExecutionError("Variable " + assign_command.get_variable_name() + " already defined", assign_command);
+	environment.addNewVariable(assign_command.get_variable_name(),
+		assign_command.get_initialization_expression()->evaluate(environment));
 }
 
 void CommandsVisitor::onVisit(const EmptyCommand& e)
@@ -33,7 +49,7 @@ void CommandsVisitor::onVisit(const SequentialCommand& command)
 
 void CommandsVisitor::onVisit(const CallCommand& call_command)
 {	
-	auto proc = environment.getProcedure(call_command.get_target_name());
+	auto proc = environment.tryGetProcedure(call_command.get_target_name());
 	if (!proc.has_value())
 		throwExecutionError("Command not defined: " + call_command.get_target_name(),call_command);
 	auto procedure = proc.value().get();

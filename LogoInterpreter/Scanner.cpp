@@ -12,6 +12,16 @@ char Scanner::nextChar(std::_String_iterator<std::_String_val<std::_Simple_types
 	return r;
 }
 
+bool Scanner::isKeyword(const std::string& word)
+{
+	return keywords.find(word) != keywords.end();
+}
+
+Token Scanner::keywordTokenFromString(const std::string& word)
+{
+	return Token(word, keywords[word]);
+}
+
 std::vector<Token> Scanner::tokenize()
 {
 	std::vector<Token> tokens;
@@ -31,14 +41,10 @@ std::vector<Token> Scanner::tokenize()
 		{
 			if (!stack.empty())
 			{
-				if (isEndBlock(stack))
+				if(isKeyword(stack))
 				{
-					tokens.push_back(Token(stack, TokenType::EndBlock));
-				}
-				else if (isIfKeyword(stack))
-				{
-					tokens.push_back(Token(stack, TokenType::IfKeyword));
-				}
+					tokens.push_back(keywordTokenFromString(stack));
+				}				
 				else if(isOperatorSequence(stack))
 				{
 					tokens.push_back(Token(stack, TokenType::Operator));
@@ -59,6 +65,8 @@ std::vector<Token> Scanner::tokenize()
 			}
 			if(isEndLine(c))
 				tokens.push_back(Token(std::string(1, c), TokenType::EndLine));
+			if (isLineComment(c))			
+				tokens.push_back(Token(std::string(1, c), TokenType::LineComment));
 			else if (isSemicolon(c))
 				tokens.push_back(Token(std::string(1,c), TokenType::Semicolon));
 			else if (isOperatorSymbol(c))

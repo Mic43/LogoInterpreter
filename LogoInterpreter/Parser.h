@@ -4,7 +4,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include "Command.h"
+#include "Commands.h"
+#include "Token.h"
 
 
 class IdentifierToken;
@@ -31,26 +32,10 @@ class Parser
 	{
 		return (tokenIt + 1) != tokens.end();
 	}
-	//
-	// const  moveNext(std::vector<Token>::iterator& tokenIt)
-	// {
-	// 	auto token = tokenIt++;
-	// 	return *token;
-	// }
-
-	// std::shared_ptr<Token> advanceNext( std::vector<std::shared_ptr<Token>>::iterator& token)
-	// {
-	// 	auto t = *token;
-	// 	++token;
-	// 	return t;
-	// }
-	// std::shared_ptr<Token> forceNext(std::vector<std::shared_ptr<Token>>::iterator& token)
-	// {
-	// 	auto t = *token;
-	// 	++token;
-	// 	return t;
-	// }	
+	
 	void throwParsingError(const std::string& message) const;
+	void assumeNextIs(std::vector<Token>::iterator& token, TokenType tt);
+	void moveToNextSignificant(std::vector<Token>::iterator& token);
 	std::shared_ptr<Command> parse(std::vector<Token>::iterator& token, std::string blockName);
 public:
 

@@ -1,10 +1,11 @@
 ﻿#pragma once
-#include "Parser.h"
+
+#include <string>
 
 enum class TokenType
 {
-	Identifier,OpenPar,ClosePar,Number,IfKeyword,Semicolon,Comma,EndBlock,Operator,
-	EndLine
+	Identifier,OpenPar,ClosePar,Number,IfKeyword,RepeatKeyword,Semicolon,Comma,EndBlockKeyword,Operator,
+	EndLine,LineComment,LetKeyword
 };
 
 class Token

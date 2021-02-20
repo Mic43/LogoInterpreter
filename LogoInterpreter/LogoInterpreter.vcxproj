@@ -141,7 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Command.h" />
+    <ClInclude Include="Commands.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="CommandsEnvironment.h" />
     <ClInclude Include="BinaryOperatorsTable.h" />
@@ -149,10 +149,10 @@
     <ClInclude Include="Scanner.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="TurtleState.h" />
-    <ClInclude Include="Visitor.h" />
+    <ClInclude Include="CommandsVisitor.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="Commands.cpp" />
     <ClCompile Include="CommandsEnvironment.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="main.cpp" />
@@ -161,7 +161,7 @@
     <ClCompile Include="Scanner.cpp" />
     <ClCompile Include="Token.cpp" />
     <ClCompile Include="TurtleState.cpp" />
-    <ClCompile Include="Visitor.cpp" />
+    <ClCompile Include="CommandsVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="in.txt" />

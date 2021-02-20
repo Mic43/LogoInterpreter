@@ -10,6 +10,14 @@ class Scanner
 {
 	std::string input;
 
+	std::map<std::string, TokenType> keywords = {
+		{"end",TokenType::EndBlockKeyword},
+		{"if",TokenType::IfKeyword},
+		{"repeat",TokenType::RepeatKeyword},
+		{"let",TokenType::LetKeyword},	
+	};
+
+	
 	bool hasNext(const std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
 	char nextChar(std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
 
@@ -34,16 +42,11 @@ class Scanner
 		return iswspace(c);
 	}
 
-	bool isEndBlock(const std::string& word)
+	
+	bool isLineComment(char c)
 	{
-		return word == "end";
-	}
-
-	bool isIfKeyword(const std::string& word)
-	{
-		return word == "if";
-	}
-
+		return c == '\'';
+	}	
 	bool isNumber(const std::string& s)
 	{		
 		auto result = double();
@@ -89,7 +92,7 @@ class Scanner
 	bool isEndLine(char c)
 	{
 		return c == '\n';
-	}
+	}	
 
 public:
 
@@ -99,6 +102,8 @@ public:
 	{
 	}
 
-	
+
+	bool isKeyword(const std::string& word);
+	Token keywordTokenFromString(const std::string& stack);
 	std::vector<Token> tokenize();
 };

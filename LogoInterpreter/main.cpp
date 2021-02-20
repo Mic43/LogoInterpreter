@@ -2,11 +2,11 @@
 #include <fstream>
 #include <iostream>
 
-#include "Command.h"
+#include "Commands.h"
 #include "Parser.h"
 #include "Scanner.h"
 #include "Token.h"
-#include "Visitor.h"
+#include "CommandsVisitor.h"
 #include <string>
 
 using namespace std;
