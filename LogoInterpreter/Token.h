@@ -4,8 +4,10 @@
 
 enum class TokenType
 {
-	Identifier,OpenPar,ClosePar,Number,IfKeyword,RepeatKeyword,Semicolon,Comma,EndBlockKeyword,Operator,
-	EndLine,LineComment,LetKeyword
+	Identifier,OpenPar,ClosePar,Number,IfKeyword,RepeatKeyword,Semicolon,Comma,EndBlockKeyword,
+	OperatorPlus,OperatorMinus,OperatorMul,OperatorDiv,OperatorGreater,OperatorGreaterEqual,OperatorLess,OperatorLessEqual,OperatorEqual,OperatorNotEqual,
+	EndLine,LineComment,LetKeyword,
+	Operator
 };
 
 class Token
@@ -28,5 +30,10 @@ public:
 	TokenType get_type() const
 	{
 		return type;
+	}
+	static bool isOperator(TokenType tt)
+	{
+		return tt == TokenType::OperatorPlus || tt == TokenType::OperatorMinus
+			|| tt == TokenType::OperatorMul || tt == TokenType::OperatorDiv;
 	}
 };

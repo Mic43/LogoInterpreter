@@ -1,4 +1,4 @@
-﻿#include "Parser.h"
+﻿#include "CommadsParser.h"
 #include "Token.h"
 #include <algorithm>
 #include <stack>
@@ -10,7 +10,7 @@
 
 using namespace std;
 
-std::shared_ptr<Expression> Parser::parseValue(const Token& token) const
+std::shared_ptr<Expression> CommadsParser::parseValue(const Token& token) const
 {
 	switch (token.get_type())
 	{
@@ -23,7 +23,7 @@ std::shared_ptr<Expression> Parser::parseValue(const Token& token) const
 	}
 }
 
-std::shared_ptr<Expression> Parser::parseOperator(const Token& oper,
+std::shared_ptr<Expression> CommadsParser::parseOperator(const Token& oper,
 	const Token& operand1, const Token& operand2) const
 {
 	auto op1Exp = parseValue(operand1);
@@ -32,14 +32,14 @@ std::shared_ptr<Expression> Parser::parseOperator(const Token& oper,
 	return OperatorExpression::tryCreateFromToken(oper, op1Exp, op2Exp);
 }
 
-std::shared_ptr<Expression> Parser::parseExpression(std::vector<Token>::iterator& token, bool& endReached)
+std::shared_ptr<Expression> CommadsParser::parseExpression(std::vector<Token>::iterator& token, bool& endReached)
 {
 	stack<Token> stack;
 
 	while (token != tokens.end() 
 		&& (token->get_type() == TokenType::Identifier 
 		|| token->get_type() == TokenType::Number 
-		|| token->get_type() == TokenType::Operator))
+		|| Token::isOperator(token->get_type())))
 	{
 		stack.push(*token);
 		moveToNextSignificant(token);
@@ -62,13 +62,13 @@ std::shared_ptr<Expression> Parser::parseExpression(std::vector<Token>::iterator
 	throwParsingError("badly formed expression");
 }
 
-std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<Token>::iterator& token)
+std::vector<shared_ptr<Expression>> CommadsParser::parseParameterList(std::vector<Token>::iterator& token)
 {
 	assumeNotEnd(token);
 	if (token->get_type() != TokenType::OpenPar)	
 		throwParsingError("badly formed parameter list");
 
-	++token;
+	moveToNextSignificant(token);
 
 	vector<shared_ptr<Expression>> res;
 	bool end_reached = false;
@@ -79,25 +79,25 @@ std::vector<shared_ptr<Expression>> Parser::parseParameterList(std::vector<Token
 	return res;
 }
 
-void Parser::assumeNotEnd(std::vector<Token>::iterator& token)
+void CommadsParser::assumeNotEnd(std::vector<Token>::iterator& token)
 {
 	if (isEnd(token))
 		throwParsingError("Unexpected end of file");
 }
 
-std::shared_ptr<Command> Parser::parse()
+std::shared_ptr<Command> CommadsParser::parse()
 {
 	auto token = tokens.begin();
 	currentLineNumber = 1;
 	return parse(token,"");
 }
 
-void Parser::throwParsingError(const string& message) const
+void CommadsParser::throwParsingError(const string& message) const
 {
 	throw runtime_error(message + ", line: " + std::to_string(currentLineNumber));
 }
 
-void Parser::assumeNextIs(std::vector<Token>::iterator& token, TokenType tokenType)
+void CommadsParser::assumeNextIs(std::vector<Token>::iterator& token, TokenType tokenType)
 {
 	moveToNextSignificant(token);
 	assumeNotEnd(token);
@@ -105,12 +105,12 @@ void Parser::assumeNextIs(std::vector<Token>::iterator& token, TokenType tokenTy
 		throwParsingError("unexpected token type");
 }
 
-void Parser::moveToNextSignificant(std::vector<Token>::iterator& token)
+std::vector<Token>::iterator& CommadsParser::moveToNextSignificant(std::vector<Token>::iterator& token)
 {
 	do 
 	{
 		++token;
-		if (isEnd(token) || token->get_type() != TokenType::EndLine)
+		if (isEnd(token) || token->get_type() != TokenType::EndLine)		
 			break;
 		
 		if(token->get_type() == TokenType::EndLine)
@@ -119,9 +119,10 @@ void Parser::moveToNextSignificant(std::vector<Token>::iterator& token)
 		}
 		
 	} while (true);
+	return token;
 }
 
-shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockName)
+shared_ptr<Command> CommadsParser::parse(vector<Token>::iterator& token, string blockName)
 {
 	if (isEnd(token))
 		return std::make_shared<EmptyCommand>(currentLineNumber);
@@ -134,13 +135,13 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockNa
 	case TokenType::Identifier:
 	{
 		string name = token->get_content();
-		vector<shared_ptr<Expression>> parameters = parseParameterList(++token);
+		vector<shared_ptr<Expression>> parameters = parseParameterList(moveToNextSignificant(token));
 		assumeNotEnd(token);
 
 		// handle call
 		if (token->get_type() == TokenType::Semicolon)
 		{
-			++token;
+			moveToNextSignificant(token);			
 			auto tc = TurtleCommand::tryCreate(name, parameters,currentLineNumber);
 
 			if (!tc)
@@ -186,14 +187,15 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockNa
 	}		
 	case TokenType::RepeatKeyword:
 	{
-		++token;
+		moveToNextSignificant(token);
 		int curLineNumberTemp = currentLineNumber;
 		assumeNotEnd(token);
 		if (token->get_type() != TokenType::OpenPar)
 			throwParsingError("expected expression");
 
 		bool end;
-		auto expression = parseExpression(++token, end);
+
+		auto expression = parseExpression(moveToNextSignificant(token), end);
 		if (!end)
 			throwParsingError("malformed expression");
 
@@ -203,7 +205,7 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockNa
 	}
 	case TokenType::IfKeyword:
 	{
-		++token;
+		moveToNextSignificant(token);
 		int curLineNumberTemp = currentLineNumber;
 		assumeNotEnd(token);
 		if (token->get_type() != TokenType::OpenPar)
@@ -211,7 +213,7 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockNa
 
 
 		bool end;
-		auto expression = parseExpression(++token, end);
+		auto expression = parseExpression(moveToNextSignificant(token), end);
 		if (!end)			
 			throwParsingError("malformed if condition");
 
@@ -227,28 +229,32 @@ shared_ptr<Command> Parser::parse(vector<Token>::iterator& token, string blockNa
 		return parse(token, blockName);
 	case TokenType::Semicolon:
 		currentCommand = std::make_shared<EmptyCommand>(currentLineNumber);
-		++token;
+		moveToNextSignificant(token);
 		break;
 	case TokenType::EndLine:
 		currentLineNumber++;
 		return parse(++token, blockName);
 		// = std::make_shared<EmptyCommand>();		 			
 	case TokenType::EndBlockKeyword:
-		if ((++token)->get_content() != blockName)			
+		if ((moveToNextSignificant(token))->get_content() != blockName)
 			throwParsingError("malformed end block");
 
-		if ((++token)->get_type() != TokenType::Semicolon)						
+		if ((moveToNextSignificant(token))->get_type() != TokenType::Semicolon)
 			throwParsingError("malformed end block");
 
-		++token;
+		moveToNextSignificant(token);
 		return std::make_shared<EmptyCommand>(currentLineNumber);
 	case TokenType::OpenPar:
 	case TokenType::ClosePar:
 	case TokenType::Number:
 	case TokenType::Comma:
-	case TokenType::Operator:
+	case TokenType::OperatorPlus:
+	case TokenType::OperatorMinus: 
+	case TokenType::OperatorMul: 
+	case TokenType::OperatorDiv: 
 		throwParsingError("Symbol not expected");
 		break;
+	
 	default:
 		throwParsingError("Not recognized token type");		
 	}

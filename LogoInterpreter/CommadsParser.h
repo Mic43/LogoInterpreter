@@ -11,7 +11,7 @@
 class IdentifierToken;
 class Token;
 
-class Parser
+class CommadsParser
 {
 	int currentLineNumber;
 	std::vector<Token> tokens;
@@ -35,12 +35,12 @@ class Parser
 	
 	void throwParsingError(const std::string& message) const;
 	void assumeNextIs(std::vector<Token>::iterator& token, TokenType tt);
-	void moveToNextSignificant(std::vector<Token>::iterator& token);
+	std::vector<Token>::iterator& moveToNextSignificant(std::vector<Token>::iterator& token);
 	std::shared_ptr<Command> parse(std::vector<Token>::iterator& token, std::string blockName);
 public:
 
 
-	explicit Parser(std::vector<Token>& tokens)
+	explicit CommadsParser(std::vector<Token>& tokens)
 		: currentLineNumber(0), tokens(tokens)
 	{
 	}

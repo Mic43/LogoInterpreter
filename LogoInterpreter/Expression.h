@@ -17,8 +17,7 @@ class OperatorExpression : public Expression
 {
 protected:
 	std::shared_ptr<Expression> leftOperand;
-	std::shared_ptr<Expression> rightOperand;
-	int priority;
+	std::shared_ptr<Expression> rightOperand;	
 public:
 
 

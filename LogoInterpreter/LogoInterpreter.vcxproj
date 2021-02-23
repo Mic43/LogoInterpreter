@@ -145,7 +145,8 @@
     <ClInclude Include="Expression.h" />
     <ClInclude Include="CommandsEnvironment.h" />
     <ClInclude Include="BinaryOperatorsTable.h" />
-    <ClInclude Include="Parser.h" />
+    <ClInclude Include="ExpressionsParser.h" />
+    <ClInclude Include="CommadsParser.h" />
     <ClInclude Include="Scanner.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="TurtleState.h" />
@@ -155,9 +156,10 @@
     <ClCompile Include="Commands.cpp" />
     <ClCompile Include="CommandsEnvironment.cpp" />
     <ClCompile Include="Expression.cpp" />
+    <ClCompile Include="ExpressionsParser.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="BinaryOperatorsTable.cpp" />
-    <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="CommadsParser.cpp" />
     <ClCompile Include="Scanner.cpp" />
     <ClCompile Include="Token.cpp" />
     <ClCompile Include="TurtleState.cpp" />

@@ -3,11 +3,13 @@
 #include <iostream>
 
 #include "Commands.h"
-#include "Parser.h"
+#include "CommadsParser.h"
 #include "Scanner.h"
 #include "Token.h"
 #include "CommandsVisitor.h"
 #include <string>
+
+#include "ExpressionsParser.h"
 
 using namespace std;
 
@@ -45,6 +47,24 @@ string loadFromFile(char* path)
 
 int main(int argc, char* argv[])
 {
+	vector<Token> tokens {
+		Token("322",TokenType::Number),
+		Token("/",TokenType::OperatorDiv),
+		Token("(",TokenType::OpenPar),
+		Token("12",TokenType::Number),
+		Token("-",TokenType::OperatorMinus),		
+		Token("1",TokenType::Number),
+		Token(")",TokenType::ClosePar),
+		Token("*",TokenType::OperatorMul),
+		Token("2",TokenType::Number),
+	};
+	
+	ExpressionsParser p(tokens);
+	auto program = p.parse();
+	//cout << program->toString() << endl;
+
+	return 0;
+	
 	if (argc < 7)
 	{
 		cout << " Not enough params";
@@ -79,7 +99,7 @@ int main(int argc, char* argv[])
 		auto tokens = s.tokenize();
 
 		cout << "Tokenization successful!" <<endl;
-		Parser p(tokens);
+		CommadsParser p(tokens);
 		auto program = p.parse();
 		cout << "Parsing successful! "<<endl;
 
