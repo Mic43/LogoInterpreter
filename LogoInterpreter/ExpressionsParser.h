@@ -16,6 +16,8 @@ class ExpressionsParser
 		return currentToken != input.end();
 	}
 	std::shared_ptr<Expression> parseValue(const Token& token) const;
+	std::shared_ptr<Expression> parseSymbol();
+	std::shared_ptr<Expression> parse(int precedence);
 
 
 public:
@@ -25,8 +27,6 @@ public:
 	{
 	}
 
-	std::shared_ptr<Expression> parseSymbol();
-	std::shared_ptr<Expression> parse(int precedence);
 	std::shared_ptr<Expression> parse();
 };
 
