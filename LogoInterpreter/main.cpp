@@ -48,22 +48,24 @@ string loadFromFile(char* path)
 int main(int argc, char* argv[])
 {
 	vector<Token> tokens {
-		Token("322",TokenType::Number),
-		Token("/",TokenType::OperatorDiv),
-		Token("(",TokenType::OpenPar),
-		Token("12",TokenType::Number),
-		Token("-",TokenType::OperatorMinus),		
-		Token("1",TokenType::Number),
-		Token(")",TokenType::ClosePar),
-		Token("*",TokenType::OperatorMul),
-		Token("2",TokenType::Number),
+		//Token("322",TokenType::Number),
+		// Token("/",TokenType::OperatorDiv),
+		// Token("(",TokenType::OpenPar),
+		// Token("12",TokenType::Number),
+		// Token("-",TokenType::OperatorSub),		
+		// Token("1",TokenType::Number),
+		// Token(")",TokenType::ClosePar),
+		// Token("*",TokenType::OperatorMul),
+		// Token("2",TokenType::Number),
+		Token("x",TokenType::Identifier),
+
 	};
 	
-	ExpressionsParser p(tokens);
-	auto program = p.parse();
-	//cout << program->toString() << endl;
-
-	return 0;
+	// ExpressionsParser p(tokens);
+	// auto program = p.parse();
+	// //cout << program->toString() << endl;
+	//
+	// return 0;
 	
 	if (argc < 7)
 	{

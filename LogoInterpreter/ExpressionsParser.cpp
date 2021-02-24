@@ -60,7 +60,7 @@ shared_ptr<Expression> ExpressionsParser::parse(int minPrecedence)
 		Token oper = next();
 		advance();
 		auto operand2 = parse(BinaryOperatorsTable::getPrecedence(oper.get_type()));
-		ret = BinaryOperatorsTable::tryCreateOperatorExpression(oper.get_content(), ret, operand2);
+		ret = BinaryOperatorsTable::tryCreateOperatorExpression(oper.get_type(), ret, operand2);
 	}
 	return ret;
 }

@@ -14,7 +14,7 @@ class BinaryOperatorsTable
 public:
 	
 	//typedef std::shared_ptr<OperatorExpression>(*OperatorExpressionFactory) (const std::shared_ptr<Expression>&, const std::shared_ptr<Expression>&);
-	static std::shared_ptr<OperatorExpression> tryCreateOperatorExpression(std::string symbol,
+	static std::shared_ptr<OperatorExpression> tryCreateOperatorExpression(TokenType tokenType,
 	                                                                       std::shared_ptr<Expression> par1,
 	                                                                       std::shared_ptr<Expression> par2);
 	static bool isOperatorSymbol(char c);
@@ -23,7 +23,7 @@ public:
 	typedef std::function < std::shared_ptr<OperatorExpression>(std::shared_ptr<Expression>, std::shared_ptr<Expression>)> OperatorExpressionCreator;
 private:
 	
-	static const std::map<std::string, OperatorExpressionCreator> symbolMapping;
+	static const std::map<TokenType, OperatorExpressionCreator> symbolMapping;
 	static const std::map<TokenType, int> precedenceTable;
 
 };

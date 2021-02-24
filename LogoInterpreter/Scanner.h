@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <algorithm>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -14,17 +15,31 @@ class Scanner
 		{"end",TokenType::EndBlockKeyword},
 		{"if",TokenType::IfKeyword},
 		{"repeat",TokenType::RepeatKeyword},
-		{"let",TokenType::LetKeyword},	
+		{"let",TokenType::LetKeyword},
 	};
+	std::map<std::string, TokenType> operators = {
+		{"+",TokenType::OperatorAdd},
+		{ "-",TokenType::OperatorSub},
+		{ "*",TokenType::OperatorMul},
+		{ "/",TokenType::OperatorDiv},
+		{ "=",TokenType::OperatorEqual},
+		{ ">",TokenType::OperatorGreater},
+		{ ">=",TokenType::OperatorGreater},
+		{ "<",TokenType::OperatorLess},
+		{ "<=",TokenType::OperatorLessEqual},
+		{ "<>",TokenType::OperatorNotEqual } };
 
-	
 	bool hasNext(const std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
 	char nextChar(std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
-
+	Token createToken(const std::string&  s)
+	{
+		return Token(s,operators.find(s)->second);
+	}
+	
 	bool isOperatorSymbol(char c)
 	{
-		return BinaryOperatorsTable::isOperatorSymbol(c);
-		//return c == '+' || c == '-' || c == '*' || c == '=' || c == '>' || c == '<' || c== '/';
+		return std::any_of(operators.begin(), operators.end(),
+			[&c](auto entry) {return entry.first.find(c) != std::string::npos; });
 	}
 
 	bool isOperatorSequence(const std::string& s)
@@ -42,13 +57,13 @@ class Scanner
 		return iswspace(c);
 	}
 
-	
+
 	bool isLineComment(char c)
 	{
 		return c == '\'';
-	}	
+	}
 	bool isNumber(const std::string& s)
-	{		
+	{
 		auto result = double();
 		auto i = std::istringstream(s);
 
@@ -92,7 +107,7 @@ class Scanner
 	bool isEndLine(char c)
 	{
 		return c == '\n';
-	}	
+	}
 
 public:
 

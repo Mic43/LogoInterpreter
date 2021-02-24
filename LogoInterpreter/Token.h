@@ -13,8 +13,8 @@ enum class TokenType
 	Semicolon,
 	Comma,
 	EndBlockKeyword,
-	OperatorPlus,
-	OperatorMinus,
+	OperatorAdd,
+	OperatorSub,
 	OperatorMul,
 	OperatorDiv,
 	OperatorGreater,
@@ -25,8 +25,7 @@ enum class TokenType
 	OperatorNotEqual,
 	EndLine,
 	LineComment,
-	LetKeyword,
-	Operator
+	LetKeyword,	
 };
 
 class Token

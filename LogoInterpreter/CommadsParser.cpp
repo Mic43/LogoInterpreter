@@ -14,8 +14,8 @@ using namespace std;
 std::vector<Token>::iterator CommadsParser::findExpressionEnd(const std::vector<Token>::iterator& token)
 {
 	std::vector<Token>::iterator res = token;
-	while (token != tokens.end()
-		&& Token::isExpressionPart(token->get_type()))
+	while (res != tokens.end()
+		&& Token::isExpressionPart(res->get_type()))
 	{
 		++res;
 	}
@@ -77,9 +77,13 @@ std::shared_ptr<Expression> CommadsParser::parseExpression(std::vector<Token>::i
 		// 	return parseOperator(oper, operand1, operand2);
 		// }
 		// throwParsingError("badly formed expression");
-
+	
+	
+	auto result =  ep.parse();
+	token = expEnd;
 	endReached = token->get_type() != TokenType::Comma;
-	return ep.parse();
+	moveToNextSignificant(token);
+	return result;
 }
 
 std::vector<shared_ptr<Expression>> CommadsParser::parseParameterList(std::vector<Token>::iterator& token)
@@ -195,7 +199,7 @@ shared_ptr<Command> CommadsParser::parse(vector<Token>::iterator& token, string 
 	{
 		assumeNextIs(token, TokenType::Identifier);
 		string varName = token->get_content();
-		assumeNextIs(token, TokenType::Operator);
+		assumeNextIs(token, TokenType::OperatorEqual);
 		moveToNextSignificant(token);
 		bool end;
 		auto exprssion = parseExpression(token, end);
@@ -268,8 +272,8 @@ shared_ptr<Command> CommadsParser::parse(vector<Token>::iterator& token, string 
 	case TokenType::ClosePar:
 	case TokenType::Number:
 	case TokenType::Comma:
-	case TokenType::OperatorPlus:
-	case TokenType::OperatorMinus:
+	case TokenType::OperatorAdd:
+	case TokenType::OperatorSub:
 	case TokenType::OperatorMul:
 	case TokenType::OperatorDiv:
 		throwParsingError("Symbol not expected");

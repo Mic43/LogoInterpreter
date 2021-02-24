@@ -24,8 +24,7 @@
 
 foo(x,n) 
 	if (n > 0) 
-		przod(x
-		);
+		przod(x);
 		lewo(45);
 		foo(x*0.75,n-1);
 		prawo(90);

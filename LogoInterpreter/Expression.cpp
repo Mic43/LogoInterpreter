@@ -10,15 +10,13 @@ std::shared_ptr<OperatorExpression> OperatorExpression::tryCreateFromToken(
 	const std::shared_ptr<Expression>& oper1, 
 	const std::shared_ptr<Expression>& oper2)
 {
-	if (token.get_type() == TokenType::Operator)
-	{
-		auto operExp = 
-			BinaryOperatorsTable::tryCreateOperatorExpression(token.get_content(),oper1, oper2);
-		if(operExp == nullptr)
-			throw std::runtime_error("invalid operator");
-		return operExp;
-	}
-	throw std::runtime_error("invalid expression");
+	
+	auto operExp = 
+		BinaryOperatorsTable::tryCreateOperatorExpression(token.get_type(),oper1, oper2);
+	if(operExp == nullptr)
+		throw std::runtime_error("invalid operator");
+	return operExp;
+
 }
 
 double OperatorDiv::evaluate(const CommandsEnvironment& e) const

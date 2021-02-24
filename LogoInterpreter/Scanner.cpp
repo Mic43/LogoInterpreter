@@ -47,7 +47,7 @@ std::vector<Token> Scanner::tokenize()
 				}				
 				else if(isOperatorSequence(stack))
 				{
-					tokens.push_back(Token(stack, TokenType::Operator));
+					tokens.push_back(createToken(stack));
 				}
 				else if (isNumber(stack))
 				{
@@ -70,7 +70,7 @@ std::vector<Token> Scanner::tokenize()
 			else if (isSemicolon(c))
 				tokens.push_back(Token(std::string(1,c), TokenType::Semicolon));
 			else if (isOperatorSymbol(c))
-				tokens.push_back(Token(std::string(1, c), TokenType::Operator));
+				tokens.push_back(createToken(std::string(1, c)));
 			else if (isOpenPar(c))
 				tokens.push_back(Token(std::string(1, c), TokenType::OpenPar));
 			else if (isClosePar(c))
