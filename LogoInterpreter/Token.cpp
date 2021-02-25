@@ -24,6 +24,9 @@ bool Token::isOperator(TokenType tt)
 bool Token::isExpressionPart(TokenType tt)
 {
 	return tt == TokenType::Identifier
+		// || tt == TokenType::ClosePar
+		// || tt == TokenType::OpenPar
 		|| tt == TokenType::Number
-		|| Token::isOperator(tt);
+		|| isOperator(tt);
+		
 }

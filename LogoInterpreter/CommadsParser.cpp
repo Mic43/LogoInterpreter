@@ -14,75 +14,27 @@ using namespace std;
 std::vector<Token>::iterator CommadsParser::findExpressionEnd(const std::vector<Token>::iterator& token)
 {
 	std::vector<Token>::iterator res = token;
-	while (res != tokens.end()
-		&& Token::isExpressionPart(res->get_type()))
+	while (res != tokens.end() 
+		&& (Token::isExpressionPart(res->get_type()) || res->get_type() == TokenType::EndLine))
 	{
 		++res;
 	}
 	return res;
 }
 
-// std::shared_ptr<Expression> CommadsParser::parseValue(const Token& token) const
-// {
-// 	switch (token.get_type())
-// 	{
-// 	case TokenType::Identifier:
-// 		return (make_shared<VarExpression>(token.get_content()));
-// 	case TokenType::Number:
-// 		return make_shared<ConstantExpresion>(stod(token.get_content()));
-// 	default:
-// 		throwParsingError("badly formed parameter list");
-// 	}
-// }
-//
-// std::shared_ptr<Expression> CommadsParser::parseOperator(const Token& oper,
-// 	const Token& operand1, const Token& operand2) const
-// {
-// 	auto op1Exp = parseValue(operand1);
-// 	auto op2Exp = parseValue(operand2);
-//
-// 	return OperatorExpression::tryCreateFromToken(oper, op1Exp, op2Exp);
-// }
-//
 std::shared_ptr<Expression> CommadsParser::parseExpression(std::vector<Token>::iterator& token, bool& endReached)
 {
 
 	auto expEnd = findExpressionEnd(token);
 	vector<Token> expInput(token, expEnd);
-	ExpressionsParser ep(expInput);
-	
-		// stack<Token> stack;
-		//
-		// while (token != tokens.end() 
-		// 	&& (token->get_type() == TokenType::Identifier 
-		// 	|| token->get_type() == TokenType::Number 
-		// 	|| Token::isOperator(token->get_type())))
-		// {
-		// 	stack.push(*token);
-		// 	moveToNextSignificant(token);
-		// }
-		// assumeNotEnd(token);
-		// endReached = token->get_type() != TokenType::Comma;
-		// moveToNextSignificant(token);
-		// if (stack.size() == 1)
-		// {
-		// 	return parseValue(stack.top());
-		// }
-		// if (stack.size() == 3)
-		// {
-		// 	auto operand2 = stack.top(); stack.pop();
-		// 	auto oper = stack.top(); stack.pop();
-		// 	auto operand1 = stack.top(); stack.pop();
-		//
-		// 	return parseOperator(oper, operand1, operand2);
-		// }
-		// throwParsingError("badly formed expression");
-	
+	ExpressionsParser ep(expInput,currentLineNumber);
+			
 	
 	auto result =  ep.parse();
 	token = expEnd;
 	endReached = token->get_type() != TokenType::Comma;
 	moveToNextSignificant(token);
+	currentLineNumber = ep.get_current_line_number();
 	return result;
 }
 
@@ -129,7 +81,7 @@ void CommadsParser::assumeNextIs(std::vector<Token>::iterator& token, TokenType 
 		throwParsingError("unexpected token type");
 }
 
-std::vector<Token>::iterator& CommadsParser::moveToNextSignificant(std::vector<Token>::iterator& token)
+std::vector<Token>::iterator& CommadsParser::moveToNextSignificant(std::vector<Token>::iterator& token, int* currentLineNumber)
 {
 	do
 	{
@@ -144,6 +96,11 @@ std::vector<Token>::iterator& CommadsParser::moveToNextSignificant(std::vector<T
 
 	} while (true);
 	return token;
+}
+
+std::vector<Token>::iterator& CommadsParser::moveToNextSignificant(std::vector<Token>::iterator& token)
+{
+	return moveToNextSignificant(token, &this->currentLineNumber);
 }
 
 shared_ptr<Command> CommadsParser::parse(vector<Token>::iterator& token, string blockName)

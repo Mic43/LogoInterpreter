@@ -8,7 +8,16 @@ class ExpressionsParser
 {
 	std::vector<Token> input;
 	std::vector<Token>::const_iterator currentToken;
-	Token next();
+	int currentLineNumber;
+
+public:
+	[[nodiscard]] int get_current_line_number() const
+	{
+		return currentLineNumber;
+	}
+
+private:
+	Token current() const;
 	void advance();
 	void throwParsingError() const;
 	bool hasNext() const
@@ -20,10 +29,12 @@ class ExpressionsParser
 	std::shared_ptr<Expression> parse(int precedence);
 
 
+	std::vector<Token>::const_iterator& moveToNextSignificant();
+
 public:
 
-	explicit ExpressionsParser(std::vector<Token> input)
-		: input(std::move(input))
+	explicit ExpressionsParser(std::vector<Token> input,int currentLineNumber)
+		: input(std::move(input)), currentLineNumber(currentLineNumber)
 	{
 	}
 

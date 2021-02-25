@@ -37,6 +37,7 @@ class CommadsParser
 	void throwParsingError(const std::string& message) const;
 	void assumeNextIs(std::vector<Token>::iterator& token, TokenType tt);
 	std::vector<Token>::iterator& moveToNextSignificant(std::vector<Token>::iterator& token);
+	std::vector<Token>::iterator& moveToNextSignificant(std::vector<Token>::iterator& token, int* currentLineNumber);
 	std::shared_ptr<Command> parse(std::vector<Token>::iterator& token, std::string blockName);
 public:
 

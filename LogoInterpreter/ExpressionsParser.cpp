@@ -6,36 +6,54 @@
 
 using namespace std;
 
-Token ExpressionsParser::next()
+Token ExpressionsParser::current() const
 {
 	return *currentToken;
 }
 
 void ExpressionsParser::advance()
 {
-	++currentToken;
+	moveToNextSignificant();
+}
+
+std::vector<Token>::const_iterator& ExpressionsParser::moveToNextSignificant()
+{
+	do
+	{
+		++currentToken;
+		if (!hasNext() || currentToken->get_type() != TokenType::EndLine)
+			break;
+
+		if (currentToken->get_type() == TokenType::EndLine)
+		{
+			currentLineNumber++;
+		}
+	}
+	while (true);
+	return currentToken;
 }
 
 void ExpressionsParser::throwParsingError() const
 {
-	throw runtime_error("Invalid expression");
+	throw runtime_error("Invalid expression, line: " + currentLineNumber);
 }
 
 std::shared_ptr<Expression> ExpressionsParser::parseSymbol()
 {
-	if(next().get_type() == TokenType::OpenPar)
+	if(current().get_type() == TokenType::OpenPar)
 	{
 		advance();
 		auto res = parse(0);
-		if (next().get_type() != TokenType::ClosePar)
+		if (current().get_type() != TokenType::ClosePar)
 			throwParsingError();
 		advance();
 		return res;
 	}
-	auto leaf =  parseValue(next());
+	auto leaf =  parseValue(current());
 	advance();
 	return leaf;
 }
+
 std::shared_ptr<Expression> ExpressionsParser::parseValue(const Token& token) const
 {
 	switch (token.get_type())
@@ -49,21 +67,23 @@ std::shared_ptr<Expression> ExpressionsParser::parseValue(const Token& token) co
 	}
 }
 
+
 shared_ptr<Expression> ExpressionsParser::parse(int minPrecedence)
 {
 	auto ret = parseSymbol();
 
 	while (hasNext()
-		&& BinaryOperatorsTable::isBinaryOperator(next().get_type())
-		&& BinaryOperatorsTable::getPrecedence(next().get_type()) >= minPrecedence)
+		&& BinaryOperatorsTable::isBinaryOperator(current().get_type())
+		&& BinaryOperatorsTable::getPrecedence(current().get_type()) >= minPrecedence)
 	{
-		Token oper = next();
+		Token oper = current();
 		advance();
-		auto operand2 = parse(BinaryOperatorsTable::getPrecedence(oper.get_type()));
+		const auto operand2 = parse(BinaryOperatorsTable::getPrecedence(oper.get_type()));
 		ret = BinaryOperatorsTable::tryCreateOperatorExpression(oper.get_type(), ret, operand2);
 	}
 	return ret;
 }
+
 shared_ptr<Expression> ExpressionsParser::parse()
 {
 	currentToken = input.begin();
