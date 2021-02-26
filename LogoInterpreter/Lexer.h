@@ -7,7 +7,7 @@
 #include "BinaryOperatorsTable.h"
 #include "Token.h"
 
-class Scanner
+class Lexer
 {
 	std::string input;
 
@@ -22,36 +22,32 @@ class Scanner
 		{ "-",TokenType::OperatorSub},
 		{ "*",TokenType::OperatorMul},
 		{ "/",TokenType::OperatorDiv},
-		{ "=",TokenType::OperatorEqual},
+		{ "==",TokenType::OperatorEqual},		
 		{ ">",TokenType::OperatorGreater},
 		{ ">=",TokenType::OperatorGreater},
 		{ "<",TokenType::OperatorLess},
 		{ "<=",TokenType::OperatorLessEqual},
-		{ "<>",TokenType::OperatorNotEqual } };
+		{ "!=",TokenType::OperatorNotEqual},
+		{ "=",TokenType::OperatorAssign},
 
-	bool hasNext(const std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
-	char nextChar(std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
-	Token createToken(const std::string&  s)
+	};
+
+	bool hasNext(const std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);	
+	Token createOperatorToken(const std::string&  s)
 	{
 		return Token(s,operators.find(s)->second);
 	}
 	
 	bool isOperatorSymbol(char c)
 	{
-		return std::any_of(operators.begin(), operators.end(),
-			[&c](auto entry) {return entry.first.find(c) != std::string::npos; });
+		 return std::any_of(operators.begin(), operators.end(),
+		 	[&c](auto entry) {return entry.first.find(c) != std::string::npos; });
 	}
-
-	bool isOperatorSequence(const std::string& s)
+	bool isOperator(const std::string& s)
 	{
-		if (s.empty())
-			return true;
-		std::string::const_iterator it = s.begin();
-		while (it != s.end() && isOperatorSymbol(*it))
-			++it;
-		return it == s.end();
+		return operators.find(s) != operators.end();
 	}
-
+	
 	bool isWhiteSpace(char c)
 	{
 		return iswspace(c);
@@ -70,15 +66,7 @@ class Scanner
 		i >> result;
 		return !i.fail() && i.eof();
 	}
-
-	bool isIdentifier(const std::string& s)
-	{
-		std::string::const_iterator it = s.begin();
-		while (it != s.end() && std::isalnum(*it))
-			++it;
-		return !s.empty() && !isdigit(s[0]) && it == s.end();
-	}
-
+	
 	bool isSemicolon(char c)
 	{
 		return c == ';';
@@ -109,16 +97,22 @@ class Scanner
 		return c == '\n';
 	}
 
+	Token parseIdentifier(std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
+	Token parseNumber(std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
+	Token parseOperator(std::_String_iterator<std::_String_val<std::_Simple_types<char>>>& it);
+	Token createToken(char symbol, TokenType tokenType);
+	bool isKeyword(const std::string& word);
+	Token keywordTokenFromString(const std::string& stack);
+
 public:
 
 
-	explicit Scanner(const std::string& input)
+	explicit Lexer(const std::string& input)
 		: input(input)
 	{
 	}
 
-
-	bool isKeyword(const std::string& word);
-	Token keywordTokenFromString(const std::string& stack);
 	std::vector<Token> tokenize();
+	//std::vector<Token> tokenize2();
+
 };

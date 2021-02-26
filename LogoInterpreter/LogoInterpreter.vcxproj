@@ -147,7 +147,7 @@
     <ClInclude Include="BinaryOperatorsTable.h" />
     <ClInclude Include="ExpressionsParser.h" />
     <ClInclude Include="CommadsParser.h" />
-    <ClInclude Include="Scanner.h" />
+    <ClInclude Include="Lexer.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="TurtleState.h" />
     <ClInclude Include="CommandsVisitor.h" />
@@ -160,7 +160,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="BinaryOperatorsTable.cpp" />
     <ClCompile Include="CommadsParser.cpp" />
-    <ClCompile Include="Scanner.cpp" />
+    <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="Token.cpp" />
     <ClCompile Include="TurtleState.cpp" />
     <ClCompile Include="CommandsVisitor.cpp" />

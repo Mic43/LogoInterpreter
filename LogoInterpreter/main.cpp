@@ -4,7 +4,7 @@
 
 #include "Commands.h"
 #include "CommadsParser.h"
-#include "Scanner.h"
+#include "Lexer.h"
 #include "Token.h"
 #include "CommandsVisitor.h"
 #include <string>
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 	CommandsVisitor visitor(std::make_shared<TurtleState>(boardSize));
 	try
 	{
-		Scanner s(input);
+		Lexer s(input);
 		auto tokens = s.tokenize();
 
 		cout << "Tokenization successful!" <<endl;

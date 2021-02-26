@@ -25,7 +25,8 @@ enum class TokenType
 	OperatorNotEqual,
 	EndLine,
 	LineComment,
-	LetKeyword,	
+	LetKeyword,
+	OperatorAssign,
 };
 
 class Token

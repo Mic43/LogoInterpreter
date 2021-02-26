@@ -35,7 +35,7 @@ std::vector<Token>::const_iterator& ExpressionsParser::moveToNextSignificant()
 
 void ExpressionsParser::throwParsingError() const
 {
-	throw runtime_error("Invalid expression, line: " + currentLineNumber);
+	throw runtime_error("Invalid expression, line: " + std::to_string(currentLineNumber));
 }
 
 std::shared_ptr<Expression> ExpressionsParser::parseSymbol()

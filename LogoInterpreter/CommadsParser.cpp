@@ -156,7 +156,7 @@ shared_ptr<Command> CommadsParser::parse(vector<Token>::iterator& token, string 
 	{
 		assumeNextIs(token, TokenType::Identifier);
 		string varName = token->get_content();
-		assumeNextIs(token, TokenType::OperatorEqual);
+		assumeNextIs(token, TokenType::OperatorAssign);
 		moveToNextSignificant(token);
 		bool end;
 		auto exprssion = parseExpression(token, end);

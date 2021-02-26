@@ -4,7 +4,7 @@ tree (size)
 		przod (size);
 		tyl (size);
 	end if;
-	if (size >  5 ) 
+	if (size*2 >  5 + size ) 
 		przod (0.33*size);
 		lewo(30);
 		tree (size*0.66) ;
@@ -36,13 +36,21 @@ end foo;
 
 foo2(x, count)
 	let s = 3 * x;	
-	let ss = s + 
-1 * vfdsg;
+	let ss = s + 1* 2;
 	repeat (count * 2)
-		przod(s + ss * 2);
+		przod(s + ss *2);
 	end repeat;
 end foo2;
 
 let b = 1;
 let a = b + 3 * b;
-foo2(a ,a);
+foo(a ,a);
+
+let x =5==3;
+let y = x* 2;
+
+if (x *y !=  x+ y)
+	przod(x +  1);
+end if;
+
+tree (a);
